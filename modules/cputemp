@@ -88,7 +88,7 @@ format_examples=(
 ### Evaluate disk space
 ###
 custom_action() {
-	temp="$( sensors | grep "${core}" | grep -oE '[.0-9]*°C' | head -1 | grep -oE '[.0-9]*' )"
+	temp="$( sensors | grep "${core}" | grep -oE '[.0-9]*°C' | head -1 | grep -oE '[0-9]*'| head -1 )"
 }
 
 
@@ -99,15 +99,13 @@ status_is_info() {
 	return 1
 }
 status_is_warn() {
-	itemp="$( echo "${temp}" | grep -oE '[0-9]*' | head -1 )"
-	if [ "${itemp}" -ge "${threshold_warn}" ]; then
+	if [ "${temp}" -ge "${threshold_warn}" ]; then
 		return 0
 	fi
 	return 1
 }
 status_is_crit() {
-	itemp="$( echo "${temp}" | grep -oE '[0-9]*' | head -1 )"
-	if [ "${itemp}" -ge "${threshold_crit}" ]; then
+	if [ "${temp}" -ge "${threshold_crit}" ]; then
 		return 0
 	fi
 	return 1

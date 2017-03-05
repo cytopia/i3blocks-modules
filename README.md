@@ -13,7 +13,7 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 ## i3blocks example:
 
 ```
-# output:  51.0°C
+# output:  51°C
 [cputemp]
 command=~/.config/i3blocks-modules/modules/cputemp
 instance=Core 0
