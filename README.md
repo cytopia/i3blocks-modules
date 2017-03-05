@@ -13,6 +13,12 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 ## i3blocks example:
 
 ```
+# output:  51.0°C
+[cputemp]
+command=~/.config/i3blocks-modules/modules/cputemp
+instance=Core 0
+interval=2
+
 # output:  375 GiB / 435 GiB (10%)
 [disk]
 command=~/.config/i3blocks-modules/modules/disk -f " {free} {funit}iB / {total} {tunit}iB ({pused}%)" -tc 20 -tc 10
