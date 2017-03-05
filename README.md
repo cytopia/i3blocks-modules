@@ -1,25 +1,33 @@
 # i3blocks modules
 
+High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/) modules.
+
+1. Use of placeholders to configure your output
+2. Custom threshold configuration
+3. Use of global or specific colors for all types of stati
+4. All modules based on the same bash template for easy module building
+
+
 
 ## i3blocks example:
 
 ```
 [disk]
-command=~/repo/cytopia/i3blocks-modules/disk -tc 20 -tc 10
+command=~/.config/i3blocks-modules/modules/disk -f " {free} {funit} / {total} {tunit} {pused}%" -tc 20 -tc 10
 instance=/
 interval=30
 
 [backlight]
-command=~/repo/cytopia/i3blocks-modules/backlight
+command=~/.config/i3blocks-modules/modules/backlight
 instance=intel_backlight
 interval=2
 
 [date]
-command=~/repo/cytopia/i3blocks-modules/date -f " {time}" -t "%a, %d.%m.%Y"
+command=~/.config/i3blocks-modules/modules/date -f " {time}" -t "%a, %d.%m.%Y"
 interval=60
 
 [time]
-command=~/repo/cytopia/i3blocks-modules/date -f " {time}" -t "%H:%M"
+command=~/.config/i3blocks-modules/modules/date -f " {time}" -t "%H:%M"
 interval=5
 ```
 
