@@ -1,0 +1,539 @@
+#!/usr/bin/env bash
+
+################################################################################
+#
+# CUSTOM VARIABLES
+#
+################################################################################
+
+###
+### Custom Defines
+###
+appname="disk"
+directory="${BLOCK_INSTANCE:-/}"
+format=" {free} {funit}iB"
+
+
+
+###
+### Thresholds
+###
+
+# Enable
+has_threshold=1
+
+# Min/Max values
+threshold_min=0
+threshold_max=100
+
+# Default warn/crit values
+threshold_warn="20"
+threshold_crit="10"
+
+# Threshold descriptions (for help display)
+threshold_warn_desc="Specify percent of free disk space for warning (${threshold_min}-${threshold_max})"
+threshold_crit_desc="Specify percent of free disk space for critical (${threshold_min}-${threshold_max})"
+
+
+###
+### Additional arguments
+###
+arg_params=(
+	"-d"
+)
+arg_vars=(
+	"directory"
+)
+arg_desc_val=(
+	"<disk>"
+)
+arg_desc_long=(
+	"Specify the disk being used. This can also be set via i3blocks 'instance=' value. If neither is set, it will default to '/'."
+)
+
+
+###
+### Format placeholders
+###
+
+# bash variable names
+format_vars=(
+	total
+	used
+	free
+	pused
+	pfree
+	uunit
+	funit
+	tunit
+)
+
+# Format placeholders
+format_nodes=(
+	"{total}"
+	"{used}"
+	"{free}"
+	"{pused}"
+	"{pfree}"
+	"{uunit}"
+	"{funit}"
+	"{tunit}"
+)
+
+# Format description (for help display)
+format_descs=(
+	"Total space"
+	"Used space"
+	"Free space"
+	"Percentage of used space"
+	"Percentage of free space"
+	"Used sace unit"
+	"Free space unit"
+	"Total space unit"
+)
+
+# Format examples (for help display)
+format_examples=(
+	"-f \" {free} {funit} ({pfree}%)\""
+	"-f \" {used} {uunit} / {total} {tunit}\""
+)
+
+
+
+################################################################################
+#
+# CUSTOM FUNCTIONS
+#
+################################################################################
+
+###
+### Evaluate disk space
+###
+custom_action() {
+	output="$( df -h -P -l "${directory}" | tail -1 )"
+
+	total="$( echo "${output}" | awk '{ print $2}' | grep -o '[.0-9]*' )"
+	used="$( echo "${output}"  | awk '{ print $3}' | grep -o '[.0-9]*' )"
+	free="$( echo "${output}"  | awk '{ print $4}' | grep -o '[.0-9]*' )"
+
+	tunit="$( echo "${output}" | awk '{ print $2}' | sed 's/[.0-9]//g' )"
+	uunit="$( echo "${output}" | awk '{ print $3}' | sed 's/[.0-9]//g' )"
+	funit="$( echo "${output}" | awk '{ print $4}' | sed 's/[.0-9]//g' )"
+
+	pused="$( echo "${output}" | awk '{ print $5}' | sed 's/%//g' )"
+	pfree="$(( 100 - pused ))"
+}
+
+
+status_is_good() {
+	return 1
+}
+status_is_info() {
+	return 1
+}
+status_is_warn() {
+	if [ "${pfree}" -le "${threshold_warn}" ]; then
+		return 0
+	fi
+	return 1
+}
+status_is_crit() {
+	if [ "${pfree}" -le "${threshold_crit}" ]; then
+		return 0
+	fi
+	return 1
+}
+
+################################################################################
+#
+# BUILT-IN VARIABLES
+#
+################################################################################
+
+###
+### General default values
+###
+color_def="#666666"		# gray
+color_good="#88b090"	# green
+color_warn="#ccdc90"	# yellow
+color_crit="#e89393"	# red
+color_info="#fce94f"	# bright yellow
+
+
+###
+### Use of pango markup?
+###
+pango=1
+
+
+###
+### source configuration file if it exists
+###
+if [ -f "${HOME}/.config/i3blocks/contrib.conf" ]; then
+	. "${HOME}/.config/i3blocks/contrib.conf"
+fi
+
+
+###
+### i3blocks vars info
+### https://vivien.github.io/i3blocks/
+###
+# name=		${BLOCK_NAME}
+# instace=	${BLOCK_INSTANCE}
+# button=	${BLOCK_BUTTON}
+# x-coor	${BLOCK_X}
+# y-coor	${BLOCK_Y}
+
+
+
+################################################################################
+#
+# BUILT-IN FUNCTIONS
+#
+################################################################################
+
+###
+### System functions
+###
+print_usage() {
+	custom_args=""
+
+	# program specific arguments
+	for (( i=0; i<${#arg_params[@]}; i++ )); do
+		custom_args="${custom_args}[${arg_params[$i]} ${arg_desc_val[$i]}] "
+	done
+
+	# Show/Hide threshold
+	if [ "${has_threshold}" = "1" ]; then
+		custom_args="${custom_args}[-tw <int>] [-tc <int>] "
+	fi
+
+	echo "Usage: ${appname} [-f <format>] ${custom_args}"
+	echo "       ${appname} -h"
+	echo "       ${appname} -v"
+	echo
+
+	if [ "${#custom_args}" -gt "0" ]; then
+		echo "Optional variables:"
+
+		for (( i=0; i<${#arg_params[@]}; i++ )); do
+			printf "  %-13s%s\n" "${arg_params[$i]} ${arg_desc_val[$i]}" "${arg_desc_long[$i]}"
+		done
+		echo
+	fi
+
+	if [ "${has_threshold}" = "1" ]; then
+		echo "Optional threshold arguments:"
+		echo "  -tw <int>    ${threshold_warn_desc}"
+		echo "               Default is: ${threshold_warn}"
+		echo "  -tc <int>    ${threshold_crit_desc}"
+		echo "               Default is: ${threshold_crit}"
+		echo
+	fi
+
+	echo "Optional markup (pango):"
+	echo
+	echo "  -np          Disable pango markup"
+	echo
+
+	echo "Optional color arguments:"
+	echo
+	echo "If not specified, script default colors are used"
+	echo "If config file with color codes is present in:"
+	echo "'${HOME}/.config/i3blocks/contrib.conf', these colors will be used."
+	echo
+	echo "  -cd <code>   Default color (hexadecimal color code)"
+	echo "               Default value is: ${color_def}"
+	echo "  -cg <code>   Good color (hexadecimal color code)"
+	echo "               Default value is: ${color_good}"
+	echo "  -cw <code>   Warning color (hexadecimal color code)"
+	echo "               Default value is: ${color_warn}"
+	echo "  -cc <code>   Critical color (hexadecimal color code)"
+	echo "               Default value is: ${color_crit}"
+	echo "  -ci <code>   Info color (hexadecimal color code)"
+	echo "               Default value is: ${color_info}"
+	echo
+
+	echo "Optional Format placeholders:"
+	echo
+	echo "  Available color placeholders:"
+	echo "  (Use with pango disabled for custom markup) building"
+	echo "     {color}        Current active color depending on thresholds"
+	echo "     {color_def}    Default color"
+	echo "     {color_good}   Good color"
+	echo "     {color_warn}   Warning color"
+	echo "     {color_crit}   Critical color"
+	echo "     {color_info}   Info color"
+	echo "  Format example:"
+	echo "     -np -f \"<span color='{color}'>Colored text</span>\""
+	echo
+
+	echo "  Available specific placeholders:"
+	for (( i=0; i<${#format_nodes[@]}; i++ )); do
+		printf "     %-15s%s\n" "${format_nodes[$i]}" "${format_descs[$i]}"
+	done
+
+	echo "  Format example:"
+	for (( i=0; i<${#format_examples[@]}; i++ )); do
+		printf "     %s\n" "${format_examples[$i]}"
+	done
+	echo "  Default:"
+	echo "     -f \"${format}\""
+}
+
+print_version() {
+	echo "${appname} v1.0 by cytopia"
+	echo "https://github.com/cytopia/i3blocks-modules"
+}
+
+###
+### Decide about final output color color
+###
+get_status_color() {
+	local _color_def="${1}"
+	local _color_good="${2}"
+	local _color_warn="${3}"
+	local _color_crit="${4}"
+	local _color_info="${5}"
+	# final color
+	local _color="${_color_def}"
+
+	if status_is_good; then
+		_color="${color_good}"
+	fi
+	if status_is_info; then
+		_color="${color_info}"
+	fi
+	if status_is_warn; then
+		_color="${color_warn}"
+	fi
+	if status_is_crit; then
+		_color="${color_crit}"
+	fi
+
+	echo "${_color}"
+}
+
+###
+### Replace custom stuff in format string
+###
+replace_placeholders() {
+	local format="${1}"
+
+	for (( i=0; i < ${#format_nodes[@]}; i++ )); do
+		replace="${format_vars[$i]}"
+		format="$( echo "${format}" | sed "s/${format_nodes[$i]}/${!replace}/g" )"
+	done
+	echo "${format}"
+}
+
+
+###
+### Replace colors in format string
+###
+replace_colors() {
+	local _format="${1}"
+	local _color="${2}"
+	local _color_def="${3}"
+	local _color_good="${4}"
+	local _color_warn="${5}"
+	local _color_crit="${6}"
+	local _color_info="${7}"
+
+	_format="$( echo "${_format}" | sed "s/{color}/${_color}/g" )"
+	_format="$( echo "${_format}" | sed "s/{color_def}/${_color_def}/g" )"
+	_format="$( echo "${_format}" | sed "s/{color_good}/${_color_good}/g" )"
+	_format="$( echo "${_format}" | sed "s/{color_warn}/${_color_warn}/g" )"
+	_format="$( echo "${_format}" | sed "s/{color_crit}/${_color_crit}/g" )"
+	_format="$( echo "${_format}" | sed "s/{color_info}/${_color_info}/g" )"
+
+	echo "${_format}"
+}
+
+
+
+################################################################################
+#
+# MAIN ENTRY POINT
+#
+################################################################################
+
+# Enable/Disable threshold argument
+if [ "${has_threshold}" = "1" ]; then
+	th_chk=""
+else
+	th_chk="__THRESHOLD_DISABLED__"
+fi
+
+
+while [ $# -gt 0  ]; do
+	case "$1" in
+		###
+		### Thresholds
+		###
+		-tw${th_chk})
+			shift
+			if ! printf "%d" "${1}" >/dev/null 2>&1; then
+				echo "Error, -tw ${1} is not a number."
+				exit 1
+			fi
+			if [ "${1}" -lt "${threshold_min}" ] || [ "${1}" -gt "${threshold_max}" ]; then
+				echo "Error, -tw ${1} is not in range (0-100)."
+				exit 1
+			fi
+			threshold_warn="${1}"
+			;;
+		-tc${th_chk})
+			shift
+			if ! printf "%d" "${1}" >/dev/null 2>&1; then
+				echo "Error, -tc ${1} is not a number."
+				exit 1
+			fi
+			if [ "${1}" -lt "${threshold_min}" ] || [ "${1}" -gt "${threshold_max}" ]; then
+				echo "Error, -tc ${1} is not in range (0-100)."
+				exit 1
+			fi
+			threshold_crit="${1}"
+			;;
+		###
+		### Format overwrite
+		###
+		-f)
+			shift
+			format="${1}"
+			;;
+		###
+		### Disable pango markup output
+		###
+		-np)
+			pango=0
+			;;
+		###
+		### Color overwrites
+		###
+		-cd)
+			# default color
+			shift
+			if ! echo "${1}" | grep -qE '#[0-9a-fA-F]{6}' >/dev/null 2>&1; then
+				echo "Error, invalid color string: ${1}"
+				exit 1
+			fi
+			color_def="${1}"
+			;;
+		-cg)
+			# good color
+			shift
+			if ! echo "${1}" | grep -qE '#[0-9a-fA-F]{6}' >/dev/null 2>&1; then
+				echo "Error, invalid color string: ${1}"
+				exit 1
+			fi
+			color_good="${1}"
+			;;
+		-cw)
+			# warning color
+			shift
+			if ! echo "${1}" | grep -qE '#[0-9a-fA-F]{6}' >/dev/null 2>&1; then
+				echo "Error, invalid color string: ${1}"
+				exit 1
+			fi
+			color_warn="${1}"
+			;;
+		-cc)
+			# critical color
+			shift
+			if ! echo "${1}" | grep -qE '#[0-9a-fA-F]{6}' >/dev/null 2>&1; then
+				echo "Error, invalid color string: ${1}"
+				exit 1
+			fi
+			color_crit="${1}"
+			;;
+		-ci)
+			# info color
+			shift
+			if ! echo "${1}" | grep -qE '#[0-9a-fA-F]{6}' >/dev/null 2>&1; then
+				echo "Error, invalid color string: ${1}"
+				exit 1
+			fi
+			color_info="${1}"
+			;;
+		###
+		### System options
+		###
+		-h)
+			print_usage
+			exit 0
+			;;
+		-v)
+			print_version
+			exit 0
+			;;
+		###
+		### Unknown/Custom option
+		###
+		*)
+
+			###
+			### Evaluate user-specified arguments
+			###
+			found=0
+			if [ "${#arg_params}" -gt "0" ]; then
+				for (( i=0; i<${#arg_params[@]}; i++ )); do
+					if [ "${arg_params[$i]}" = "${1}" ]; then
+						shift
+						var_name="${arg_vars[$i]}"
+						eval "${var_name}=\"${1}\""
+						found=1
+						break;
+					fi
+				done
+			fi
+
+			###
+			### Unknown option
+			###
+			if [ "${found}" = "0" ]; then
+				echo "Invalid argument: '${1}'"
+				print_usage
+				exit 1
+			fi
+			;;
+	esac
+	shift
+done
+
+
+
+
+###
+### Call custom function
+###
+custom_action
+
+###
+### Get final output color (based on custom specs)
+###
+color="$( get_status_color "${color_def}" "${color_good}" "${color_warn}" "${color_crit}" "${color_info}" )"
+
+###
+### Format (colors)
+###
+format="$( replace_colors "${format}" "${color}" "${color_def}" "${color_good}" "${color_warn}" "${color_crit}" "${color_info}" )"
+
+###
+### Format (custom)
+###
+format="$( replace_placeholders "${format}" )"
+
+
+###
+### Output pango or plain style?
+###
+if [ "${pango}" = "1" ]; then
+	echo "<span color=\"${color}\">${format}</span>"
+else
+	echo "${format}"	# Long output
+	echo "${format}"	# short output
+	echo "\\${color}"	# color code '\#RRGGBB'
+fi
+
+exit 0
