@@ -5,27 +5,32 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 1. Use of placeholders to configure your output
 2. Custom threshold configuration
 3. Use of global or specific colors for all types of stati
-4. All modules based on the same bash template for easy module building
+4. Custom pango markup via color placeholders
+5. All modules based on the same bash template for easy module building
 
 
 
 ## i3blocks example:
 
 ```
+# output:  375 GiB / 435 GiB (10%)
 [disk]
-command=~/.config/i3blocks-modules/modules/disk -f " {free} {funit} / {total} {tunit} {pused}%" -tc 20 -tc 10
+command=~/.config/i3blocks-modules/modules/disk -f " {free} {funit}iB / {total} {tunit}iB ({pused}%)" -tc 20 -tc 10
 instance=/
 interval=30
 
+# output: ☼ 100%
 [backlight]
 command=~/.config/i3blocks-modules/modules/backlight
 instance=intel_backlight
 interval=2
 
+# output:  Sun, 05.03.2017
 [date]
 command=~/.config/i3blocks-modules/modules/date -f " {time}" -t "%a, %d.%m.%Y"
 interval=60
 
+# output:  14:36
 [time]
 command=~/.config/i3blocks-modules/modules/date -f " {time}" -t "%H:%M"
 interval=5
@@ -37,7 +42,7 @@ interval=5
 All modules are designed to work in the same way. The only difference is that some have thresholds and additional options. Keep a look at the `disk` example for an overview:
 
 ```
-$ /disk -h
+$ disk -h
 Usage: disk [-f <format>] [-d <disk>] [-tw <int>] [-tc <int>]
        disk -h
        disk -v
@@ -61,7 +66,7 @@ Optional color arguments:
 
 If not specified, script default colors are used
 If config file with color codes is present in:
-'/home/cytopia/.config/i3blocks/contrib.conf', these colors will be used.
+'~/.config/i3blocks/contrib.conf', these colors will be used.
 
   -cd <code>   Default color (hexadecimal color code)
                Default value is: #666666
@@ -101,7 +106,6 @@ Optional Format placeholders:
      -f " {used} {uunit} / {total} {tunit}"
   Default:
      -f " {free} {funit}iB"
-
 ```
 
 
