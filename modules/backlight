@@ -76,10 +76,21 @@ format_examples=(
 ### Evaluate disk space
 ###
 custom_action() {
-	local max="$( cat "/sys/class/backlight/${provider}/max_brightness" )"
-	local cur="$( cat "/sys/class/backlight/${provider}/actual_brightness" )"
+	local path
+	local max
+	local cur
+
+	path="/sys/class/backlight"
+
+	if [ ! -d "${path}/${provider}" ]; then
+		echo "Error, provider '${provider}' does not exist in: ${path}"
+		exit 1
+	fi
+	max="$( cat "${path}/${provider}/max_brightness" )"
+	cur="$( cat "${path}/${provider}/actual_brightness" )"
 	percent="$(( 100 * cur / max ))"
 }
+
 
 
 
