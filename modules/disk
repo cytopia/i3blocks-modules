@@ -21,6 +21,8 @@ format=" {free} {funit}iB free"
 ###
 ### Thresholds
 ###
+
+# Enable
 has_threshold=1
 
 
@@ -322,7 +324,7 @@ print_usage() {
 }
 
 print_version() {
-	echo "${appname} v1.2 by cytopia"
+	echo "${appname} v1.3 by cytopia"
 	echo "https://github.com/cytopia/i3blocks-modules"
 }
 
@@ -352,15 +354,15 @@ get_status_color() {
 
 		if [ "${tg_sign[$i]}" = "<" ]; then
 			if [ "${pval}" -lt "${tg_value[$i]}" ]; then
-				_color="${color_good}"
+				_color="${_color_good}"
 			fi
 		elif [ "${tg_sign[$i]}" = "=" ]; then
 			if [[ "${pval}" =~ ${tg_value[$i]} ]]; then
-				_color="${color_good}"
+				_color="${_color_good}"
 			fi
 		elif [ "${tg_sign[$i]}" = ">" ]; then
 			if [ "${pval}" -gt "${tg_value[$i]}" ]; then
-				_color="${color_good}"
+				_color="${_color_good}"
 			fi
 		fi
 	done
@@ -375,15 +377,15 @@ get_status_color() {
 
 		if [ "${ti_sign[$i]}" = "<" ]; then
 			if [ "${pval}" -lt "${ti_value[$i]}" ]; then
-				_color="${color_good}"
+				_color="${_color_info}"
 			fi
 		elif [ "${ti_sign[$i]}" = "=" ]; then
 			if [[ "${pval}" =~ ${ti_value[$i]} ]]; then
-				_color="${color_good}"
+				_color="${_color_info}"
 			fi
 		elif [ "${ti_sign[$i]}" = ">" ]; then
 			if [ "${pval}" -gt "${ti_value[$i]}" ]; then
-				_color="${color_good}"
+				_color="${_color_info}"
 			fi
 		fi
 	done
@@ -398,15 +400,15 @@ get_status_color() {
 
 		if [ "${tw_sign[$i]}" = "<" ]; then
 			if [ "${pval}" -lt "${tw_value[$i]}" ]; then
-				_color="${color_good}"
+				_color="${color_warn}"
 			fi
 		elif [ "${tw_sign[$i]}" = "=" ]; then
 			if [[ "${pval}" =~ ${tw_value[$i]} ]]; then
-				_color="${color_good}"
+				_color="${_color_warn}"
 			fi
 		elif [ "${tw_sign[$i]}" = ">" ]; then
 			if [ "${pval}" -gt "${tw_value[$i]}" ]; then
-				_color="${color_good}"
+				_color="${_color_warn}"
 			fi
 		fi
 	done
@@ -421,15 +423,15 @@ get_status_color() {
 
 		if [ "${tc_sign[$i]}" = "<" ]; then
 			if [ "${pval}" -lt "${tc_value[$i]}" ]; then
-				_color="${color_good}"
+				_color="${_color_crit}"
 			fi
 		elif [ "${tc_sign[$i]}" = "=" ]; then
 			if [[ "${pval}" =~ ${tc_value[$i]} ]]; then
-				_color="${color_good}"
+				_color="${_color_crit}"
 			fi
 		elif [ "${tc_sign[$i]}" = ">" ]; then
 			if [ "${pval}" -gt "${tc_value[$i]}" ]; then
-				_color="${color_good}"
+				_color="${_color_crit}"
 			fi
 		fi
 	done
