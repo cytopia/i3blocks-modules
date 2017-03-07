@@ -76,6 +76,11 @@ format_examples=(
 ### Evaluate disk space
 ###
 custom_action() {
+	if ! command -v sensors > /dev/null 2>&1; then
+		echo "Error, binary 'sensos' not installed, but required for this module to work."
+		echo "Type '${appname} -h' for help"
+		exit 1
+	fi
 	temp="$( sensors | grep "${core}" | grep -oE '[.0-9]*°C' | head -1 | grep -oE '[0-9]*'| head -1 )"
 }
 
