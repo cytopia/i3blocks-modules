@@ -139,6 +139,27 @@ color_warn="#ccdc90"	# yellow
 color_crit="#e89393"	# red
 color_info="#fce94f"	# bright yellow
 
+
+###
+### Threshold arrays
+###
+tg_placeholder=()
+tg_sign=()
+tg_value=()
+
+ti_placeholder=()
+ti_sign=()
+ti_value=()
+
+tw_placeholder=()
+tw_sign=()
+tw_value=()
+
+tc_placeholder=()
+tc_sign=()
+tc_value=()
+
+
 ###
 ### Use of pango markup?
 ###
@@ -208,6 +229,9 @@ print_usage() {
 		echo "This enables the colorizing of the final output depending on any met"
 		echo "conditions specified."
 		echo "Default is not to use any threshold"
+		echo "You can use unlimited number of threshold for each type."
+		echo
+
 		echo "  -tg <p> <s> <int|str>   Enable threshold for 'good status'"
 		echo "  -ti <p> <s> <int|str>   Enable threshold for 'info status'"
 		echo "  -tw <p> <s> <int|str>   Enable threshold for 'warn status'"
@@ -298,7 +322,7 @@ print_usage() {
 }
 
 print_version() {
-	echo "${appname} v1.1 by cytopia"
+	echo "${appname} v1.2 by cytopia"
 	echo "https://github.com/cytopia/i3blocks-modules"
 }
 
@@ -318,96 +342,98 @@ get_status_color() {
 	local pval
 
 	# has good color?
-	if [ "${tg_placeholder}" != "" ]; then
-		if [ "${tg_sign}" = "=" ]; then
-			pval="${!tg_placeholder}"
+	for (( i=0; i < ${#tg_placeholder[@]}; i++ )); do
+
+		if [ "${tg_sign[$i]}" = "=" ]; then
+			pval="${!tg_placeholder[$i]}"
 		else
-			pval="$( echo "${!tg_placeholder}" | grep -oE '[0-9]*' | head -1 )"
+			pval="$( echo "${!tg_placeholder[$i]}" | grep -oE '[0-9]*' | head -1 )"
 		fi
 
-		if [ "${tg_sign}" = "<" ]; then
-			if [ "${pval}" -lt "${tg_value}" ]; then
+		if [ "${tg_sign[$i]}" = "<" ]; then
+			if [ "${pval}" -lt "${tg_value[$i]}" ]; then
 				_color="${color_good}"
 			fi
-		elif [ "${tg_sign}" = "=" ]; then
-			if [[ "${pval}" =~ ${tg_value} ]]; then
+		elif [ "${tg_sign[$i]}" = "=" ]; then
+			if [[ "${pval}" =~ ${tg_value[$i]} ]]; then
 				_color="${color_good}"
 			fi
-		elif [ "${tg_sign}" = ">" ]; then
-			if [ "${pval}" -gt "${tg_value}" ]; then
+		elif [ "${tg_sign[$i]}" = ">" ]; then
+			if [ "${pval}" -gt "${tg_value[$i]}" ]; then
 				_color="${color_good}"
 			fi
 		fi
-	fi
-
+	done
 	# has info color?
-	if [ "${ti_placeholder}" != "" ]; then
-		if [ "${ti_sign}" = "=" ]; then
-			pval="${!ti_placeholder}"
+	for (( i=0; i < ${#ti_placeholder[@]}; i++ )); do
+
+		if [ "${ti_sign[$i]}" = "=" ]; then
+			pval="${!ti_placeholder[$i]}"
 		else
-			pval="$( echo "${!ti_placeholder}" | grep -oE '[0-9]*' | head -1 )"
+			pval="$( echo "${!ti_placeholder[$i]}" | grep -oE '[0-9]*' | head -1 )"
 		fi
 
-		if [ "${ti_sign}" = "<" ]; then
-			if [ "${pval}" -lt "${ti_value}" ]; then
-				_color="${color_info}"
+		if [ "${ti_sign[$i]}" = "<" ]; then
+			if [ "${pval}" -lt "${ti_value[$i]}" ]; then
+				_color="${color_good}"
 			fi
-		elif [ "${ti_sign}" = "=" ]; then
-			if [[ "${pval}" =~ ${ti_value} ]]; then
-				_color="${color_info}"
+		elif [ "${ti_sign[$i]}" = "=" ]; then
+			if [[ "${pval}" =~ ${ti_value[$i]} ]]; then
+				_color="${color_good}"
 			fi
-		elif [ "${ti_sign}" = ">" ]; then
-			if [ "${pval}" -gt "${ti_value}" ]; then
-				_color="${color_info}"
+		elif [ "${ti_sign[$i]}" = ">" ]; then
+			if [ "${pval}" -gt "${ti_value[$i]}" ]; then
+				_color="${color_good}"
 			fi
 		fi
-	fi
+	done
+	# has warning color?
+	for (( i=0; i < ${#tw_placeholder[@]}; i++ )); do
 
-	# has warn color?
-	if [ "${tw_placeholder}" != "" ]; then
-		if [ "${tw_sign}" = "=" ]; then
-			pval="${!tw_placeholder}"
+		if [ "${tw_sign[$i]}" = "=" ]; then
+			pval="${!tw_placeholder[$i]}"
 		else
-			pval="$( echo "${!tw_placeholder}" | grep -oE '[0-9]*' | head -1 )"
+			pval="$( echo "${!tw_placeholder[$i]}" | grep -oE '[0-9]*' | head -1 )"
 		fi
 
-		if [ "${tw_sign}" = "<" ]; then
-			if [ "${pval}" -lt "${tw_value}" ]; then
-				_color="${color_warn}"
+		if [ "${tw_sign[$i]}" = "<" ]; then
+			if [ "${pval}" -lt "${tw_value[$i]}" ]; then
+				_color="${color_good}"
 			fi
-		elif [ "${tw_sign}" = "=" ]; then
-			if [[ "${pval}" =~ ${tw_value} ]]; then
-				_color="${color_warn}"
+		elif [ "${tw_sign[$i]}" = "=" ]; then
+			if [[ "${pval}" =~ ${tw_value[$i]} ]]; then
+				_color="${color_good}"
 			fi
-		elif [ "${tw_sign}" = ">" ]; then
-			if [ "${pval}" -gt "${tw_value}" ]; then
-				_color="${color_warn}"
+		elif [ "${tw_sign[$i]}" = ">" ]; then
+			if [ "${pval}" -gt "${tw_value[$i]}" ]; then
+				_color="${color_good}"
 			fi
 		fi
-	fi
+	done
+	# has critical color?
+	for (( i=0; i < ${#tc_placeholder[@]}; i++ )); do
 
-	# has crit color?
-	if [ "${tc_placeholder}" != "" ]; then
-		if [ "${tc_sign}" = "=" ]; then
-			pval="${!tc_placeholder}"
+		if [ "${tc_sign[$i]}" = "=" ]; then
+			pval="${!tc_placeholder[$i]}"
 		else
-			pval="$( echo "${!tc_placeholder}" | grep -oE '[0-9]*' | head -1 )"
+			pval="$( echo "${!tc_placeholder[$i]}" | grep -oE '[0-9]*' | head -1 )"
 		fi
 
-		if [ "${tc_sign}" = "<" ]; then
-			if [ "${pval}" -lt "${tc_value}" ]; then
-				_color="${color_crit}"
+		if [ "${tc_sign[$i]}" = "<" ]; then
+			if [ "${pval}" -lt "${tc_value[$i]}" ]; then
+				_color="${color_good}"
 			fi
-		elif [ "${tc_sign}" = "=" ]; then
-			if [[ "${pval}" =~ ${tc_value} ]]; then
-				_color="${color_crit}"
+		elif [ "${tc_sign[$i]}" = "=" ]; then
+			if [[ "${pval}" =~ ${tc_value[$i]} ]]; then
+				_color="${color_good}"
 			fi
-		elif [ "${tc_sign}" = ">" ]; then
-			if [ "${pval}" -gt "${tc_value}" ]; then
-				_color="${color_crit}"
+		elif [ "${tc_sign[$i]}" = ">" ]; then
+			if [ "${pval}" -gt "${tc_value[$i]}" ]; then
+				_color="${color_good}"
 			fi
 		fi
-	fi
+	done
+
 	echo "${_color}"
 }
 
@@ -470,10 +496,6 @@ while [ $# -gt 0  ]; do
 		### Threshold good
 		###
 		-tg${th_chk})
-			tg_placeholder=
-			tg_sign=
-			tg_value=
-
 			# 1/3 Check placeholder
 			shift
 			if [ "${1}" = "" ]; then
@@ -491,46 +513,42 @@ while [ $# -gt 0  ]; do
 				echo "Error, -tg '${1}' no such placeholder."
 				exit 1
 			fi
-			tg_placeholder="${format_vars[$i]}"
+			tg_placeholder+=("${format_vars[$i]}")
 
 			# 2/3 Check sign
 			shift
 			if [ "${1}" = "" ]; then
-				echo "Error, -tg '${tg_placeholder}' '${1}' - sign is empty."
+				echo "Error, -tg '${tg_placeholder[${#tg_placeholder[@]}]}' '${1}' - sign is empty."
 				exit 1
 			fi
 			if [ "${1}" != "<" ] && [ "${1}" != ">" ] && [ "${1}" != "=" ]; then
-				echo "Error, -tg '${tg_placeholder}' '${1}' - invalid sign: '${1}'."
+				echo "Error, -tg '${tg_placeholder[${#tg_placeholder[@]}]}' '${1}' - invalid sign: '${1}'."
 				exit 1
 			fi
-			tg_sign="${1}"
+			tg_sign+=("${1}")
 
 			# 3/3 Check value
 			shift
 			if [ "${1}" = "" ]; then
-				echo "Error, -tg '${tg_placeholder}' '${tg_sign}' '${1}' - value is empty."
+				echo "Error, -tg '${tg_placeholder[${#tg_placeholder[@]}]}' '${tg_sign[${#tg_sign[@]}]}' '${1}' - value is empty."
 				exit 1
 			fi
-			if [ "${tg_sign}" != "=" ]; then
+			if [ "${tg_sign[${#tg_sign[@]}-1]}" != "=" ]; then
 				if ! printf "%d" "${1}" >/dev/null 2>&1; then
-					echo "Error, -tg '${tg_placeholder}' '${tg_sign}' '${1}' is not a number."
+					echo "Error, -tg '${tg_placeholder[${#tg_placeholder[@]}]}' '${tg_sign[${#tg_sign[@]}]}' '${1}' is not a number."
 					exit 1
 				fi
 			fi
-			tg_value="${1}"
+			tg_value+=("${1}")
 			;;
 		###
 		### Threshold info
 		###
 		-ti${th_chk})
-			ti_placeholder=
-			ti_sign=
-			ti_value=
-
 			# 1/3 Check placeholder
 			shift
 			if [ "${1}" = "" ]; then
-				echo "Error, -ti <p> - no placeholder specified."
+				echo "Error, -tg <p> - no placeholder specified."
 				exit 1
 			fi
 			f=0
@@ -541,49 +559,45 @@ while [ $# -gt 0  ]; do
 				fi
 			done
 			if [ "${f}" = "0" ]; then
-				echo "Error, -ti '${1}' no such placeholder."
+				echo "Error, -tg '${1}' no such placeholder."
 				exit 1
 			fi
-			ti_placeholder="${format_vars[$i]}"
+			ti_placeholder+=("${format_vars[$i]}")
 
 			# 2/3 Check sign
 			shift
 			if [ "${1}" = "" ]; then
-				echo "Error, -ti '${ti_placeholder}' '${1}' - sign is empty."
+				echo "Error, -tg '${ti_placeholder[${#ti_placeholder[@]}]}' '${1}' - sign is empty."
 				exit 1
 			fi
 			if [ "${1}" != "<" ] && [ "${1}" != ">" ] && [ "${1}" != "=" ]; then
-				echo "Error, -ti '${ti_placeholder}' '${1}' - invalid sign: '${1}'."
+				echo "Error, -tg '${ti_placeholder[${#ti_placeholder[@]}]}' '${1}' - invalid sign: '${1}'."
 				exit 1
 			fi
-			ti_sign="${1}"
+			ti_sign+=("${1}")
 
 			# 3/3 Check value
 			shift
 			if [ "${1}" = "" ]; then
-				echo "Error, -ti '${ti_placeholder}' '${ti_sign}' '${1}' - value is empty."
+				echo "Error, -tg '${ti_placeholder[${#ti_placeholder[@]}]}' '${ti_sign[${#ti_sign[@]}]}' '${1}' - value is empty."
 				exit 1
 			fi
-			if [ "${ti_sign}" != "=" ]; then
+			if [ "${ti_sign[${#ti_sign[@]}-1]}" != "=" ]; then
 				if ! printf "%d" "${1}" >/dev/null 2>&1; then
-					echo "Error, -ti '${ti_placeholder}' '${ti_sign}' '${1}' is not a number."
+					echo "Error, -tg '${ti_placeholder[${#ti_placeholder[@]}]}' '${ti_sign[${#ti_sign[@]}]}' '${1}' is not a number."
 					exit 1
 				fi
 			fi
-			ti_value="${1}"
+			ti_value+=("${1}")
 			;;
 		###
-		### Threshold warn
+		### Threshold warning
 		###
 		-tw${th_chk})
-			tw_placeholder=
-			tw_sign=
-			tw_value=
-
 			# 1/3 Check placeholder
 			shift
 			if [ "${1}" = "" ]; then
-				echo "Error, -tw <p> - no placeholder specified."
+				echo "Error, -tg <p> - no placeholder specified."
 				exit 1
 			fi
 			f=0
@@ -594,49 +608,45 @@ while [ $# -gt 0  ]; do
 				fi
 			done
 			if [ "${f}" = "0" ]; then
-				echo "Error, -tw '${1}' no such placeholder."
+				echo "Error, -tg '${1}' no such placeholder."
 				exit 1
 			fi
-			tw_placeholder="${format_vars[$i]}"
+			tw_placeholder+=("${format_vars[$i]}")
 
 			# 2/3 Check sign
 			shift
 			if [ "${1}" = "" ]; then
-				echo "Error, -tw '${tw_placeholder}' '${1}' - sign is empty."
+				echo "Error, -tg '${tw_placeholder[${#tw_placeholder[@]}]}' '${1}' - sign is empty."
 				exit 1
 			fi
 			if [ "${1}" != "<" ] && [ "${1}" != ">" ] && [ "${1}" != "=" ]; then
-				echo "Error, -tw '${tw_placeholder}' '${1}' - invalid sign: '${1}'."
+				echo "Error, -tg '${tw_placeholder[${#tw_placeholder[@]}]}' '${1}' - invalid sign: '${1}'."
 				exit 1
 			fi
-			tw_sign="${1}"
+			tw_sign+=("${1}")
 
 			# 3/3 Check value
 			shift
 			if [ "${1}" = "" ]; then
-				echo "Error, -tw '${tw_placeholder}' '${tw_sign}' '${1}' - value is empty."
+				echo "Error, -tg '${tw_placeholder[${#tw_placeholder[@]}]}' '${tw_sign[${#tw_sign[@]}]}' '${1}' - value is empty."
 				exit 1
 			fi
-			if [ "${tw_sign}" != "=" ]; then
+			if [ "${tw_sign[${#tw_sign[@]}-1]}" != "=" ]; then
 				if ! printf "%d" "${1}" >/dev/null 2>&1; then
-					echo "Error, -tw '${tw_placeholder}' '${tw_sign}' '${1}' is not a number."
+					echo "Error, -tg '${tw_placeholder[${#tw_placeholder[@]}]}' '${tw_sign[${#tw_sign[@]}]}' '${1}' is not a number."
 					exit 1
 				fi
 			fi
-			tw_value="${1}"
+			tw_value+=("${1}")
 			;;
 		###
-		### Threshold crit
+		### Threshold critical
 		###
 		-tc${th_chk})
-			tc_placeholder=
-			tc_sign=
-			tc_value=
-
 			# 1/3 Check placeholder
 			shift
 			if [ "${1}" = "" ]; then
-				echo "Error, -tc <p> - no placeholder specified."
+				echo "Error, -tg <p> - no placeholder specified."
 				exit 1
 			fi
 			f=0
@@ -647,36 +657,36 @@ while [ $# -gt 0  ]; do
 				fi
 			done
 			if [ "${f}" = "0" ]; then
-				echo "Error, -tc '${1}' no such placeholder."
+				echo "Error, -tg '${1}' no such placeholder."
 				exit 1
 			fi
-			tc_placeholder="${format_vars[$i]}"
+			tc_placeholder+=("${format_vars[$i]}")
 
 			# 2/3 Check sign
 			shift
 			if [ "${1}" = "" ]; then
-				echo "Error, -tc '${tc_placeholder}' '${1}' - sign is empty."
+				echo "Error, -tg '${tc_placeholder[${#tc_placeholder[@]}]}' '${1}' - sign is empty."
 				exit 1
 			fi
 			if [ "${1}" != "<" ] && [ "${1}" != ">" ] && [ "${1}" != "=" ]; then
-				echo "Error, -tc '${tc_placeholder}' '${1}' - invalid sign: '${1}'."
+				echo "Error, -tg '${tc_placeholder[${#tc_placeholder[@]}]}' '${1}' - invalid sign: '${1}'."
 				exit 1
 			fi
-			tc_sign="${1}"
+			tc_sign+=("${1}")
 
 			# 3/3 Check value
 			shift
 			if [ "${1}" = "" ]; then
-				echo "Error, -tc '${tc_placeholder}' '${tw_sign}' '${1}' - value is empty."
+				echo "Error, -tg '${tc_placeholder[${#tc_placeholder[@]}]}' '${tc_sign[${#tc_sign[@]}]}' '${1}' - value is empty."
 				exit 1
 			fi
-			if [ "${tc_sign}" != "=" ]; then
+			if [ "${tc_sign[${#tc_sign[@]}-1]}" != "=" ]; then
 				if ! printf "%d" "${1}" >/dev/null 2>&1; then
-					echo "Error, -tc '${tc_placeholder}' '${tc_sign}' '${1}' is not a number."
+					echo "Error, -tg '${tc_placeholder[${#tc_placeholder[@]}]}' '${tc_sign[${#tc_sign[@]}]}' '${1}' is not a number."
 					exit 1
 				fi
 			fi
-			tc_value="${1}"
+			tc_value+=("${1}")
 			;;
 		###
 		### Format overwrite
