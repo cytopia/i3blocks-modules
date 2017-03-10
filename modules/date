@@ -25,6 +25,12 @@ format=" {time}"
 # Enable
 has_threshold=1
 
+# Depending on the conditions in your custom_action()
+# you can force the output to be critical or warning
+# Set these vars to 1 (in custom_action)
+force_crit=0
+force_warn=0
+
 
 ###
 ### Additional arguments
@@ -292,7 +298,7 @@ print_usage() {
 }
 
 print_version() {
-	echo "${appname} v1.3 by cytopia"
+	echo "${appname} v1.5 by cytopia"
 	echo "https://github.com/cytopia/i3blocks-modules"
 }
 
@@ -310,6 +316,21 @@ get_status_color() {
 	local _color="${_color_def}"
 
 	local pval
+
+	# has custom critical color?
+	if [ "${force_crit}" = "1" ]; then
+		_color="${_color_crit}"
+		echo "${_color}"
+		return
+	fi
+	# has custom warning color?
+	if [ "${force_warn}" = "1" ]; then
+		_color="${_color_warn}"
+		echo "${_color}"
+		return
+	fi
+
+
 
 	# has good color?
 	for (( i=0; i < ${#tg_placeholder[@]}; i++ )); do
@@ -380,6 +401,8 @@ get_status_color() {
 			fi
 		fi
 	done
+
+
 	# has critical color?
 	for (( i=0; i < ${#tc_placeholder[@]}; i++ )); do
 
@@ -403,6 +426,7 @@ get_status_color() {
 			fi
 		fi
 	done
+
 
 	echo "${_color}"
 }
@@ -470,6 +494,7 @@ while [ $# -gt 0  ]; do
 			shift
 			if [ "${1}" = "" ]; then
 				echo "Error, -tg <p> - no placeholder specified."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			f=0
@@ -481,6 +506,7 @@ while [ $# -gt 0  ]; do
 			done
 			if [ "${f}" = "0" ]; then
 				echo "Error, -tg '${1}' no such placeholder."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			tg_placeholder+=("${format_vars[$i]}")
@@ -489,10 +515,12 @@ while [ $# -gt 0  ]; do
 			shift
 			if [ "${1}" = "" ]; then
 				echo "Error, -tg '${tg_placeholder[${#tg_placeholder[@]}]}' '${1}' - sign is empty."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			if [ "${1}" != "<" ] && [ "${1}" != ">" ] && [ "${1}" != "=" ]; then
 				echo "Error, -tg '${tg_placeholder[${#tg_placeholder[@]}]}' '${1}' - invalid sign: '${1}'."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			tg_sign+=("${1}")
@@ -501,11 +529,13 @@ while [ $# -gt 0  ]; do
 			shift
 			if [ "${1}" = "" ]; then
 				echo "Error, -tg '${tg_placeholder[${#tg_placeholder[@]}]}' '${tg_sign[${#tg_sign[@]}]}' '${1}' - value is empty."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			if [ "${tg_sign[${#tg_sign[@]}-1]}" != "=" ]; then
 				if ! printf "%d" "${1}" >/dev/null 2>&1; then
 					echo "Error, -tg '${tg_placeholder[${#tg_placeholder[@]}]}' '${tg_sign[${#tg_sign[@]}]}' '${1}' is not a number."
+					echo "Type ${appname} -h for help"
 					exit 1
 				fi
 			fi
@@ -519,6 +549,7 @@ while [ $# -gt 0  ]; do
 			shift
 			if [ "${1}" = "" ]; then
 				echo "Error, -tg <p> - no placeholder specified."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			f=0
@@ -530,6 +561,7 @@ while [ $# -gt 0  ]; do
 			done
 			if [ "${f}" = "0" ]; then
 				echo "Error, -tg '${1}' no such placeholder."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			ti_placeholder+=("${format_vars[$i]}")
@@ -538,10 +570,12 @@ while [ $# -gt 0  ]; do
 			shift
 			if [ "${1}" = "" ]; then
 				echo "Error, -tg '${ti_placeholder[${#ti_placeholder[@]}]}' '${1}' - sign is empty."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			if [ "${1}" != "<" ] && [ "${1}" != ">" ] && [ "${1}" != "=" ]; then
 				echo "Error, -tg '${ti_placeholder[${#ti_placeholder[@]}]}' '${1}' - invalid sign: '${1}'."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			ti_sign+=("${1}")
@@ -550,11 +584,13 @@ while [ $# -gt 0  ]; do
 			shift
 			if [ "${1}" = "" ]; then
 				echo "Error, -tg '${ti_placeholder[${#ti_placeholder[@]}]}' '${ti_sign[${#ti_sign[@]}]}' '${1}' - value is empty."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			if [ "${ti_sign[${#ti_sign[@]}-1]}" != "=" ]; then
 				if ! printf "%d" "${1}" >/dev/null 2>&1; then
 					echo "Error, -tg '${ti_placeholder[${#ti_placeholder[@]}]}' '${ti_sign[${#ti_sign[@]}]}' '${1}' is not a number."
+					echo "Type ${appname} -h for help"
 					exit 1
 				fi
 			fi
@@ -568,6 +604,7 @@ while [ $# -gt 0  ]; do
 			shift
 			if [ "${1}" = "" ]; then
 				echo "Error, -tg <p> - no placeholder specified."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			f=0
@@ -579,6 +616,7 @@ while [ $# -gt 0  ]; do
 			done
 			if [ "${f}" = "0" ]; then
 				echo "Error, -tg '${1}' no such placeholder."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			tw_placeholder+=("${format_vars[$i]}")
@@ -587,10 +625,12 @@ while [ $# -gt 0  ]; do
 			shift
 			if [ "${1}" = "" ]; then
 				echo "Error, -tg '${tw_placeholder[${#tw_placeholder[@]}]}' '${1}' - sign is empty."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			if [ "${1}" != "<" ] && [ "${1}" != ">" ] && [ "${1}" != "=" ]; then
 				echo "Error, -tg '${tw_placeholder[${#tw_placeholder[@]}]}' '${1}' - invalid sign: '${1}'."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			tw_sign+=("${1}")
@@ -599,11 +639,13 @@ while [ $# -gt 0  ]; do
 			shift
 			if [ "${1}" = "" ]; then
 				echo "Error, -tg '${tw_placeholder[${#tw_placeholder[@]}]}' '${tw_sign[${#tw_sign[@]}]}' '${1}' - value is empty."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			if [ "${tw_sign[${#tw_sign[@]}-1]}" != "=" ]; then
 				if ! printf "%d" "${1}" >/dev/null 2>&1; then
 					echo "Error, -tg '${tw_placeholder[${#tw_placeholder[@]}]}' '${tw_sign[${#tw_sign[@]}]}' '${1}' is not a number."
+					echo "Type ${appname} -h for help"
 					exit 1
 				fi
 			fi
@@ -617,6 +659,7 @@ while [ $# -gt 0  ]; do
 			shift
 			if [ "${1}" = "" ]; then
 				echo "Error, -tg <p> - no placeholder specified."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			f=0
@@ -628,6 +671,7 @@ while [ $# -gt 0  ]; do
 			done
 			if [ "${f}" = "0" ]; then
 				echo "Error, -tg '${1}' no such placeholder."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			tc_placeholder+=("${format_vars[$i]}")
@@ -636,10 +680,12 @@ while [ $# -gt 0  ]; do
 			shift
 			if [ "${1}" = "" ]; then
 				echo "Error, -tg '${tc_placeholder[${#tc_placeholder[@]}]}' '${1}' - sign is empty."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			if [ "${1}" != "<" ] && [ "${1}" != ">" ] && [ "${1}" != "=" ]; then
 				echo "Error, -tg '${tc_placeholder[${#tc_placeholder[@]}]}' '${1}' - invalid sign: '${1}'."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			tc_sign+=("${1}")
@@ -648,11 +694,13 @@ while [ $# -gt 0  ]; do
 			shift
 			if [ "${1}" = "" ]; then
 				echo "Error, -tg '${tc_placeholder[${#tc_placeholder[@]}]}' '${tc_sign[${#tc_sign[@]}]}' '${1}' - value is empty."
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			if [ "${tc_sign[${#tc_sign[@]}-1]}" != "=" ]; then
 				if ! printf "%d" "${1}" >/dev/null 2>&1; then
 					echo "Error, -tg '${tc_placeholder[${#tc_placeholder[@]}]}' '${tc_sign[${#tc_sign[@]}]}' '${1}' is not a number."
+					echo "Type ${appname} -h for help"
 					exit 1
 				fi
 			fi
@@ -663,6 +711,11 @@ while [ $# -gt 0  ]; do
 		###
 		-f)
 			shift
+			if [ "${1}" = "" ]; then
+				echo "Error, -f requires a string"
+				echo "Type ${appname} -h for help"
+				exit 1
+			fi
 			format="${1}"
 			;;
 		###
@@ -679,6 +732,7 @@ while [ $# -gt 0  ]; do
 			shift
 			if ! echo "${1}" | grep -qE '#[0-9a-fA-F]{6}' >/dev/null 2>&1; then
 				echo "Error, invalid color string: ${1}"
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			color_def="${1}"
@@ -688,6 +742,7 @@ while [ $# -gt 0  ]; do
 			shift
 			if ! echo "${1}" | grep -qE '#[0-9a-fA-F]{6}' >/dev/null 2>&1; then
 				echo "Error, invalid color string: ${1}"
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			color_good="${1}"
@@ -697,6 +752,7 @@ while [ $# -gt 0  ]; do
 			shift
 			if ! echo "${1}" | grep -qE '#[0-9a-fA-F]{6}' >/dev/null 2>&1; then
 				echo "Error, invalid color string: ${1}"
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			color_warn="${1}"
@@ -706,6 +762,7 @@ while [ $# -gt 0  ]; do
 			shift
 			if ! echo "${1}" | grep -qE '#[0-9a-fA-F]{6}' >/dev/null 2>&1; then
 				echo "Error, invalid color string: ${1}"
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			color_crit="${1}"
@@ -715,6 +772,7 @@ while [ $# -gt 0  ]; do
 			shift
 			if ! echo "${1}" | grep -qE '#[0-9a-fA-F]{6}' >/dev/null 2>&1; then
 				echo "Error, invalid color string: ${1}"
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			color_info="${1}"
@@ -756,7 +814,7 @@ while [ $# -gt 0  ]; do
 			###
 			if [ "${found}" = "0" ]; then
 				echo "Invalid argument: '${1}'"
-				print_usage
+				echo "Type ${appname} -h for help"
 				exit 1
 			fi
 			;;
