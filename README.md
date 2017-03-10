@@ -10,6 +10,18 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 5. All modules based on the same bash template for easy module building
 
 
+## Modules
+
+| module | placeholders | description |
+|--------|--------------|-------------|
+| backlight | {percent} | Show percentage of current screen brightness |
+| bitcoin | {usd} {eur} | Show current bitcoin price (either from coindesk or btc-e |
+| cputemp | {temp} | Show current cpu temperature |
+| date | {time} | Show defined date/time string |
+| disk | {total} {used} {free} {pused} {pfree} {uunit} {funit} {tunit} | Show space consumption of a disk |
+| online | {status} {status_or_ip} {ip} {country} {city} | Show online status with IP including your location |
+
+
 ## Threshold examples
 
 Colorize date with 'good status' during weekends:
@@ -20,7 +32,6 @@ Colorize time with warning state after 23 o'clock and between 0 and 3 with criti
 ```
 date -f " {time}" -t "%H:%M" -tw '{time}' '=' '^23.*' -tc '{time}' '=' '^0(0|1|2|3).*'
 ```
-
 
 
 ## i3blocks example:
