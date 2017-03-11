@@ -10,25 +10,36 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 5. All modules based on the same bash template for easy module building
 
 
-## Modules
+## Available Modules
 
-| module | placeholders | description |
+1. All placeholders can be used in the format argument (e.g.: `-f '{percent}'`) to format your output.
+2. All placeholders can be used to determine the status (e.g.: `-tc '{percent}' '<' 50` or `-tc '{date}' '=' '^(Sat|Sun)*'` and thus affect the final output color..
+
+| Module | Placeholders | Description |
 |--------|--------------|-------------|
-| backlight | {percent} | Show percentage of current screen brightness |
-| bitcoin | {usd} {eur} | Show current bitcoin price (either from coindesk or btc-e |
-| cputemp | {temp} | Show current cpu temperature |
-| date | {time} | Show defined date/time string |
-| disk | {total} {used} {free} {pused} {pfree} {uunit} {funit} {tunit} | Show space consumption of a disk |
-| iface | {ip} {ip_nm} {ip6} {ip6_nm} {mac} {mtu} {iface} {status} {status_or_ip} {status_or_ip6} | Show status and various values of network interface |
-| memory | {total} {used} {free} {pused} {pfree} {uunit} {funit} {tunit} | Show RAM memory consumption |
-| online | {status} {status_or_ip} {ip} {country} {city} | Show online status with IP including your location |
+| **[backlight](modules/backlight)** | {percent} | Show percentage of current screen brightness |
+| **[bitcoin](modules/bitcoin)** | {usd} {eur} | Show current bitcoin price (either from coindesk or btc-e |
+| **[cputemp](modules/cputemp)** | {temp} | Show current cpu temperature |
+| **[date](modules/date)** | {time} | Show defined date/time string |
+| **[disk](modules/disk)** | {total} {used} {free} {pused} {pfree} {uunit} {funit} {tunit} | Show space consumption of a disk |
+| **[iface](modules/iface)** | {ip} {ip_nm} {ip6} {ip6_nm} {mac} {mtu} {iface} {status} {status_or_ip} {status_or_ip6} | Show status and various values of network interface |
+| **[memory](modules/memory)** | {total} {used} {free} {pused} {pfree} {uunit} {funit} {tunit} | Show RAM memory consumption |
+| **[online](modules/online)** | {status} {status_or_ip} {ip} {country} {city} | Show online status with IP including your location |
+
+Additionally each module has color placeholders in case you want to create your own markup output (see `-np`):
+* {color}
+* {color_def}
+* {color_good}
+* {color_warn}
+* {color_crit}
+* {color_info}
 
 ## Threshold and stati
 
 Depending on the status of a module (self-evaluated or custom threshold comparison), the output text will be shown in different colors. There are different ways to determine the final status:
 
-1. **Self evaluation**: Some modules are able to evaluate their status independently. E.g.: `iface` will have a *good status* if it is up and has an IP assigned or it will have a *critical status* if it is down or absent. Depen
-2. **Argument thresholds**: you can specify custom command line arguments with which you can compare the value of *placeholders* (less than, greater then or a regex comparison). This can be done for *good*, *info*, *warning* and *critical* states.
+1. **Self evaluation**: Some modules are able to evaluate their status independently. E.g.: `iface` will have a *good status* if it is up and has an IP assigned or it will have a *critical status* if it is down or absent.
+2. **Argument thresholds**: You can specify custom command line arguments with which you can compare the value of *placeholders* (less than, greater then or a regex comparison). This can be done for *good*, *info*, *warning* and *critical* states.
 3. **Status precedence**: Even though the module is in *good state* it can still show up in a *critical state*. This is evaluated by the precedence. Precedence is evaluated in the following order (later ones always override previous ones):
   - good
   - info
