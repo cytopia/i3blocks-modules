@@ -19,6 +19,7 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 | cputemp | {temp} | Show current cpu temperature |
 | date | {time} | Show defined date/time string |
 | disk | {total} {used} {free} {pused} {pfree} {uunit} {funit} {tunit} | Show space consumption of a disk |
+| memory | {total} {used} {free} {pused} {pfree} {uunit} {funit} {tunit} | Show RAM memory consumption |
 | online | {status} {status_or_ip} {ip} {country} {city} | Show online status with IP including your location |
 
 
