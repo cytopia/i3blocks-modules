@@ -30,13 +30,7 @@ has_threshold=1
 # Set these vars to 1 (in custom_action)
 force_crit=0
 force_warn=0
-
-
-# Depending on the conditions in your custom_action()
-# you can force the output to be critical or warning
-# Set these vars to 1 (in custom_action)
-force_crit=0
-force_warn=0
+force_good=0
 
 
 ###
@@ -309,7 +303,7 @@ print_usage() {
 }
 
 print_version() {
-	echo "${appname} v1.5 by cytopia"
+	echo "${appname} v1.6 by cytopia"
 	echo "https://github.com/cytopia/i3blocks-modules"
 }
 
@@ -342,6 +336,10 @@ get_status_color() {
 	fi
 
 
+	# has custom good color?
+	if [ "${force_good}" = "1" ]; then
+		_color="${_color_good}"
+	fi
 
 	# has good color?
 	for (( i=0; i < ${#tg_placeholder[@]}; i++ )); do
@@ -447,13 +445,16 @@ get_status_color() {
 ### Replace custom stuff in format string
 ###
 replace_placeholders() {
-	local format="${1}"
+	local _format="${1}"
+	local _search
+	local _replace
 
 	for (( i=0; i < ${#format_nodes[@]}; i++ )); do
-		replace="${format_vars[$i]}"
-		format="$( echo "${format}" | sed "s/${format_nodes[$i]}/${!replace}/g" )"
+		_search="${format_nodes[$i]}"
+		_replace="${!format_vars[$i]}"
+		 _format="${_format/${_search}/${_replace}}"
 	done
-	echo "${format}"
+	echo "${_format}"
 }
 
 
@@ -469,12 +470,12 @@ replace_colors() {
 	local _color_crit="${6}"
 	local _color_info="${7}"
 
-	_format="$( echo "${_format}" | sed "s/{color}/${_color}/g" )"
-	_format="$( echo "${_format}" | sed "s/{color_def}/${_color_def}/g" )"
-	_format="$( echo "${_format}" | sed "s/{color_good}/${_color_good}/g" )"
-	_format="$( echo "${_format}" | sed "s/{color_warn}/${_color_warn}/g" )"
-	_format="$( echo "${_format}" | sed "s/{color_crit}/${_color_crit}/g" )"
-	_format="$( echo "${_format}" | sed "s/{color_info}/${_color_info}/g" )"
+	_format="${_format/'{color}'/${_color}}"
+	_format="${_format/'{color_def}'/${_color_def}}"
+	_format="${_format/'{color_good}'/${_color_good}}"
+	_format="${_format/'{color_warn}'/${_color_warn}}"
+	_format="${_format/'{color_crit}'/${_color_crit}}"
+	_format="${_format/'{color_info}'/${_color_info}}"
 
 	echo "${_format}"
 }
