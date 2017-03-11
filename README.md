@@ -22,6 +22,18 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 | memory | {total} {used} {free} {pused} {pfree} {uunit} {funit} {tunit} | Show RAM memory consumption |
 | online | {status} {status_or_ip} {ip} {country} {city} | Show online status with IP including your location |
 
+## Threshold and stati
+
+Depending on the status of a module (self-evaluated or custom threshold comparison), the output text will be shown in different colors. There are different ways to determine the final status:
+
+1. **Self evaluation**: Some modules are able to evaluate their status independently. E.g.: `iface` will have a *good status* if it is up and has an IP assigned or it will have a *critical status* if it is down or absent. Depen
+2. **Argument thresholds**: you can specify custom command line arguments with which you can compare the value of *placeholders* (less than, greater then or a regex comparison). This can be done for *good*, *info*, *warning* and *critical* states.
+3. **Status precedence**: Even though the module is in *good state* it can still show up in a *critical state*. This is evaluated by the precedence. Precedence is evaluated in the following order (later ones always override previous ones):
+  - good
+  - info
+  - warning
+  - critical
+
 
 ## Threshold examples
 
