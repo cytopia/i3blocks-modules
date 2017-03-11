@@ -25,6 +25,8 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 | **[iface](modules/iface)** | {ip} {ip_nm} {ip6} {ip6_nm} {mac} {mtu} {iface} {status} {status_or_ip} {status_or_ip6} | Show status and various values of network interface |
 | **[memory](modules/memory)** | {total} {used} {free} {pused} {pfree} {uunit} {funit} {tunit} | Show RAM memory consumption |
 | **[online](modules/online)** | {status} {status_or_ip} {ip} {country} {city} | Show online status with IP including your location |
+| **[wifi](modules/wifi)** | {ip} {ip_nm} {ip6} {ip6_nm} {mac} {mtu} {iface} {status} {status_or_ip} {status_or_ip6} {ssid} {freq} {freq_unit} {tx_power} {tx_power_unit} {quality} {signal} {signal_unit} {noise} | Show info about your wireless connection |
+
 
 Additionally each module has color placeholders in case you want to create your own markup output (see `-np`):
 * {color}
