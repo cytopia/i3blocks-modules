@@ -2,18 +2,20 @@
 
 High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/) modules.
 
-1. Use of **placeholders** to configure your output
-2. Custom **threshold** configuration
-3. Unlimited **regex** comparison against all placeholder for threshold settings
-3. Use of global or specific **colors** for all types of stati
-4. Custom pango **markup** via color placeholders
-5. All modules based on the same bash template for easy module building
+1. Use of **placeholders** to configure your output (`-f`)
+2. **Conditional output format** based on any placeholder value (`-fe`)
+3. Custom **threshold** configuration (`-tg|-ti|-tw|-tc`)
+4. Unlimited **greater than**, **less than**, **regex** or **not equals** comparison against all placeholder for threshold settings (`<`, `>`, `=`, `!=`)
+5. Use of global or specific **colors** for all types of stati
+6. Custom pango **markup** via color placeholders (`-np`)
+7. All modules based on the same bash template for easy module building
 
 
 ## Available Modules
 
-1. All placeholders can be used in the format argument (e.g.: `-f '{percent}'`) to format your output.
-2. All placeholders can be used to determine the status (e.g.: `-tc '{percent}' '<' 50` or `-tc '{date}' '=' '^(Sat|Sun)*'` and thus affect the final output color..
+1. All placeholders can be used in the format argument (e.g.: `-f 'Signal: {percent}%'`) to format your output.
+2. All placeholders can be checked and according to their value the output will differ (e.g.: `-fe '{status}' '=' 'up' '{iface} {ip} ({ssid} {signal}%)'`)
+3. All placeholders can be used to determine the status (e.g.: `-tc '{percent}' '<' 50` or `-tc '{date}' '=' '^(Sat|Sun)*'` and thus affect the final output color..
 
 | Module | Placeholders | Description |
 |--------|--------------|-------------|
@@ -36,6 +38,8 @@ Additionally each module has color placeholders in case you want to create your 
 * {color_crit}
 * {color_info}
 
+
+
 ## Threshold and stati
 
 Depending on the status of a module (self-evaluated or custom threshold comparison), the output text will be shown in different colors. There are different ways to determine the final status:
@@ -47,6 +51,32 @@ Depending on the status of a module (self-evaluated or custom threshold comparis
   - info
   - warning
   - critical
+
+## Placeholder format examples
+
+There are two types of placeholders:
+
+1. Static output format
+2. Extended conditional output format
+
+**Static output format**
+
+Use placeholders to specify how the module should output the provided information:
+
+```
+$ wifi -f 'WIFI: {ip} {ssid} ({signal}%)'
+```
+
+Sometime however, you want the output to be dynamic in case the module reports a different state and the placeholders will not have any values. In the above case, if the wifi is not connected or not present, the output would be `WIFI:  (%)`
+
+**Extended conditional output format**
+
+For this to overcome, you can evaluate *placeholders* that a module provides and decide upon their value what output format you want to have:
+
+```
+$ wifi -fe '{status}' '=' 'up' '{iface} {ip} ({ssid})' -fe '{status}' '!=' 'up' 'WIFI: down'
+```
+In the above example you will have different outputs based on whether the Wifi interface is up or not up.
 
 
 ## Threshold examples
