@@ -65,7 +65,7 @@ There are two types of placeholders:
 
 Use placeholders to specify how the module should output the provided information:
 
-```
+```shell
 $ wifi -f 'WIFI: {ip} {ssid} ({signal}%)'
 ```
 
@@ -75,7 +75,7 @@ Sometime however, you want the output to be dynamic in case the module reports a
 
 For this to overcome, you can evaluate *placeholders* that a module provides and decide upon their value what output format you want to have:
 
-```
+```shell
 $ wifi -fe '{status}' '=' 'up' '{iface} {ip} ({ssid})' -fe '{status}' '!=' 'up' 'WIFI: down'
 ```
 In the above example you will have different outputs based on whether the Wifi interface is up or not up.
@@ -84,11 +84,11 @@ In the above example you will have different outputs based on whether the Wifi i
 ## Threshold examples
 
 Colorize date with 'good status' during weekends:
-```
+```shell
 date -f " {time}" -t "%a, %d.%m.%Y" -tg '{time}' '=' '^(Sat|Sun).*'
 ```
 Colorize time with warning state after 23 o'clock and between 0 and 3 with critical state:
-```
+```shell
 date -f " {time}" -t "%H:%M" -tw '{time}' '=' '^23.*' -tc '{time}' '=' '^0(0|1|2|3).*'
 ```
 
@@ -165,7 +165,7 @@ You can use parameters to overwrite these colors on a per module base. You can h
 
 `~/.config/i3blocks-modules/contrib.conf:`
 
-```
+```shell
 # i3blocks contrib module configuration
 
 # Set your default colors
