@@ -17,6 +17,7 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 | **[backlight](modules/backlight)** | {percent} | Show percentage of current screen brightness |
 | **[battery](modules/battery)** | {time} {percent} {status} {capacity} {ucapacity} | Show battery information |
 | **[bitcoin](modules/bitcoin)** | {usd} {eur} | Show current bitcoin price (either from coindesk or btc-e |
+| **[cpu](modules/cpu)** | {speed} {uspeed} {percent} {usage5} {usage10} {usage15} | Show current cpu statistics |
 | **[cputemp](modules/cputemp)** | {temp} | Show current cpu temperature |
 | **[date](modules/date)** | {time} | Show defined date/time string |
 | **[disk](modules/disk)** | {total} {used} {free} {pused} {pfree} {uunit} {funit} {tunit} | Show space consumption of a disk |
