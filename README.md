@@ -95,17 +95,35 @@ date -f " {time}" -t "%H:%M" -tw '{time}' '=' '^23.*' -tc '{time}' '=' '^0(0|
 
 ## i3blocks example:
 
-```
+```shell
 # output:  51°C
+# shows 'goog color' at temperatures below 71 degrees
+# shows 'warn color' at temperatures above 70 degrees
+# shows 'crit color' at temperatures above 90 degrees
 [cputemp]
 command=~/.config/i3blocks-modules/modules/cputemp -tg '{temp}' '<' 71 -tw '{temp}' '>' 70 -tc '{temp}' '>' 90
-
 instance=Core 0
 interval=2
 
+# output discharging:   31% (01:50)
+# output charging:     ⚡ 31% (00:23)
+# output full:          100% (08:32)
+# output full with ac: ⚡ 100%
+# shows 'good color' when fully charged
+# shows 'warn color' when remaining percentage is below 30%
+# shows 'crit color' when remaining percentage is below 10%
+# shows different icons depending on remaining percent
+# shows different icon for charging and discharging
+[battery]
+command=~/.config/i3blocks-modules/modules/battery -fe '{percent}' '<' 90 ' {percent}% ({time})' -fe '{percent}' '<' 75 ' {percent}% ({time})' -fe '{percent}' '<' 60 ' {percent}% ({time})' -fe '{percent}' '<' 35 ' {percent}% ({time})' -fe '{percent}' '<' 5 ' {percent}% ({time})' -fe '{status}' '=' '^charging' '⚡ {percent}% ({time})' -fe '{status}' '=' 'full' ' {percent}%' -tg '{status}' '=' 'full' -tg '{percent}' '=' 100 -ti '{status}' '=' '^charging' -tw '{percent}' '<' 30 -tc '{percent}' '<' 5
+instance=Battery 0
+interval=1
+
 # output:  375 GiB / 435 GiB (10%)
+# show 'warn color' when disk space is less than 20%
+# show 'crit color' when disk space is less than 10%
 [disk]
-command=~/.config/i3blocks-modules/modules/disk -f " {free} {funit}iB / {total} {tunit}iB ({pused}%)" -tc 20 -tc 10
+command=~/.config/i3blocks-modules/modules/disk -f " {free} {funit}iB / {total} {tunit}iB ({pused}%)" -tc '{pfree}' '<' 20 -tc '{pfree}' '<' 10
 instance=/
 interval=30
 
