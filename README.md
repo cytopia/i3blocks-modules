@@ -20,6 +20,7 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 | Module | Placeholders | Description |
 |--------|--------------|-------------|
 | **[backlight](modules/backlight)** | {percent} | Show percentage of current screen brightness |
+| **[battery](modules/battery)** | {time} {percent} {status} {capacity} {ucapacity} | Show battery information |
 | **[bitcoin](modules/bitcoin)** | {usd} {eur} | Show current bitcoin price (either from coindesk or btc-e |
 | **[cputemp](modules/cputemp)** | {temp} | Show current cpu temperature |
 | **[date](modules/date)** | {time} | Show defined date/time string |
@@ -27,6 +28,7 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 | **[iface](modules/iface)** | {ip} {ip_nm} {ip6} {ip6_nm} {mac} {mtu} {iface} {status} {status_or_ip} {status_or_ip6} | Show status and various values of network interface |
 | **[memory](modules/memory)** | {total} {used} {free} {pused} {pfree} {uunit} {funit} {tunit} | Show RAM memory consumption |
 | **[online](modules/online)** | {status} {status_or_ip} {ip} {country} {city} | Show online status with IP including your location |
+| **[volume](modules/volume)** | {volume} {muted} {port} {dev_api} {dev_bus} {dev_form_factor} {dev_profile} {dev_icon_name} {dev_description} {alsa_name} {alsa_card} {alsa_driver} {alsa_mixer} {icon} | Show info about current volume (auto-changes when headphone or usb/bluetooth is connected) |
 | **[wifi](modules/wifi)** | {ip} {ip_nm} {ip6} {ip6_nm} {mac} {mtu} {iface} {status} {status_or_ip} {status_or_ip6} {ssid} {freq} {freq_unit} {tx_power} {tx_power_unit} {quality} {signal} {signal_unit} {noise} | Show info about your wireless connection |
 
 
@@ -96,7 +98,8 @@ date -f " {time}" -t "%H:%M" -tw '{time}' '=' '^23.*' -tc '{time}' '=' '^0(0|
 ```
 # output:  51°C
 [cputemp]
-command=~/.config/i3blocks-modules/modules/cputemp
+command=~/.config/i3blocks-modules/modules/cputemp -tg '{temp}' '<' 71 -tw '{temp}' '>' 70 -tc '{temp}' '>' 90
+
 instance=Core 0
 interval=2
 
