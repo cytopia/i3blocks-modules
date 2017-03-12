@@ -3,19 +3,14 @@
 High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/) modules.
 
 1. Use of **placeholders** to configure your output (`-f`)
-2. **Conditional output format** based on any placeholder value (`-fe`)
-3. Custom **threshold** configuration (`-tg|-ti|-tw|-tc`)
-4. Unlimited **greater than**, **less than**, **regex** or **not equals** comparison against all placeholder for threshold settings (`<`, `>`, `=`, `!=`)
+2. **Conditional output format** based on placeholder comparison (`-fe`)
+3. **Threshold** settings by checking against placeholders (`-tg|-ti|-tw|-tc`)
+4. **Arithmetic** and **regex** comparison against all placeholder for threshold settings (`<`, `>`, `=`, `!=`)
 5. Use of global or specific **colors** for all types of stati
 6. Custom pango **markup** via color placeholders (`-np`)
-7. All modules based on the same bash template for easy module building
 
 
 ## Available Modules
-
-1. All placeholders can be used in the format argument (e.g.: `-f 'Signal: {percent}%'`) to format your output.
-2. All placeholders can be checked and according to their value the output will differ (e.g.: `-fe '{status}' '=' 'up' '{iface} {ip} ({ssid} {signal}%)'`)
-3. All placeholders can be used to determine the status (e.g.: `-tc '{percent}' '<' 50` or `-tc '{date}' '=' '^(Sat|Sun)*'` and thus affect the final output color..
 
 | Module | Placeholders | Description |
 |--------|--------------|-------------|
@@ -30,6 +25,10 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 | **[online](modules/online)** | {status} {status_or_ip} {ip} {country} {city} | Show online status with IP including your location |
 | **[volume](modules/volume)** | {volume} {muted} {port} {dev_api} {dev_bus} {dev_form_factor} {dev_profile} {dev_icon_name} {dev_description} {alsa_name} {alsa_card} {alsa_driver} {alsa_mixer} {icon} | Show info about current volume (auto-changes when headphone or usb/bluetooth is connected) |
 | **[wifi](modules/wifi)** | {ip} {ip_nm} {ip6} {ip6_nm} {mac} {mtu} {iface} {status} {status_or_ip} {status_or_ip6} {ssid} {freq} {freq_unit} {tx_power} {tx_power_unit} {quality} {signal} {signal_unit} {noise} | Show info about your wireless connection |
+
+1. All placeholders can be used in the format argument to format your output.<br/> (e.g.: `-f 'Signal: {percent}%'`)
+2. All placeholders can be checked and according to their value the output will differ<br/>(e.g.: `-fe '{status}' '=' 'up' '{iface} {ip} ({ssid} {signal}%)'`)
+3. All placeholders can be used to determine the status and thus affect the final output color.<br/>(e.g.: `-tc '{percent}' '<' 50` or `-tc '{date}' '=' '^(Sat|Sun)*'`)
 
 
 Additionally each module has color placeholders in case you want to create your own markup output (see `-np`):
