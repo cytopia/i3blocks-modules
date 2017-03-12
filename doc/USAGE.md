@@ -1,16 +1,15 @@
 # Usage example
 
 
-```
+```shell
 $ disk -h
-Usage: disk [-f <format>] [-d <disk>] [-tg|-ti|-tw|-tc <p> <s> <int|str>] [-np] [-cd|-cg|-cw|-cc|-ci <code>]
+Usage: disk [-f <format>] [-fe <p> <s> <int|str> <f>] [-d <disk>] [-tg|-ti|-tw|-tc <p> <s> <int|str>] [-np] [-cd|-cg|-cw|-cc|-ci <code>]
        disk -h
        disk -v
 
 Optional variables:
 --------------------------------------------------------------------------------
-  -d <disk>    Specify the disk being used. This can also be set via i3blocks
-              'instance=' value. If neither is set, it will default to '/'.
+  -d <disk>    Specify the disk being used. This can also be set via i3blocks 'instance=' value. If neither is set, it will default to '/'.
 
 Optional threshold arguments:
 --------------------------------------------------------------------------------
@@ -30,10 +29,12 @@ You can use unlimited number of threshold for each type.
            valid placeholders: {total} {used} {free} {pused} {pfree} {uunit} {funit} {tunit}
            Note 1: placeholder values will be converted to integers
                    Any decimal places will simply be cut off.
-           Note 2: In equal mode (<s> '=') is a string comparison and
+           Note 2: In equal mode (<s> '=') is a string regex comparison and
+                   no placeholder will be converted.
+           Note 3: In unequal mode (<s> '!=') is a string comparison and
                    no placeholder will be converted.
            Note 3: In equal mode (<s> '=') regex is allowed :-)
-     <s>   must either be '<', '>' or '=' depending on what direction
+     <s>   must either be '<', '>', '=' or '!='  depending on what direction
            you want to check the threshold placeholder against.
      <int> The integer number you want to check against the placeholder.
      <str> The string you want to check against the placeholder.
@@ -101,4 +102,33 @@ Optional Format placeholders:
      -f " {used} {uunit} / {total} {tunit}"
   Default:
      -f " {free} {funit}iB free"
+
+Optional extended Format output:
+--------------------------------------------------------------------------------
+You can conditionally set your output text depending on the value of any placeholder.
+For example, If you have a placeholder {status} that either is 'up' or 'down', you
+can specify different outputs for 'up' and for 'down'.
+Usage
+  -fe <p> <s> <v> <f>
+
+   Format example:
+     -fe '{status} '=' 'up' 'It works ;-)' -fe '{status}' '!=' 'up' 'status is: {status}'
+   Explanation:
+     <p>   is the placeholder value you want to check against.
+           valid placeholders: {total} {used} {free} {pused} {pfree} {uunit} {funit} {tunit}
+           Note 1: placeholder values will be converted to integers
+                   Any decimal places will simply be cut off.
+           Note 2: In equal mode (<s> '=') is a string regex comparison and
+                   no placeholder will be converted.
+           Note 3: In unequal mode (<s> '!=') is a string comparison and
+                   no placeholder will be converted.
+           Note 3: In equal mode (<s> '=') regex is allowed :-)
+     <s>   must either be '<', '>', '=' or '!='  depending on what direction
+           you want to check the threshold placeholder against.
+     <int> The integer number you want to check against the placeholder.
+     <str> The string you want to check against the placeholder.
+           You can only use a string when in equal mode '='.
+           You can also use regex here.
+     <f>   Is the format string that should be displayed under the above condition.
+           Of course you can also use placeholders here ;-).
 ```
