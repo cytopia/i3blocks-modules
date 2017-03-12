@@ -112,7 +112,7 @@ Usage
   -fe <p> <s> <v> <f>
 
    Format example:
-     -fe '{status} '=' 'up' 'It works ;-)' -fe '{status}' '!=' 'up' 'status is: {status}'
+     -fe '{status}' '=' 'up' 'It works ;-)' -fe '{status}' '!=' 'up' 'status is: {status}'
    Explanation:
      <p>   is the placeholder value you want to check against.
            valid placeholders: {total} {used} {free} {pused} {pfree} {uunit} {funit} {tunit}
