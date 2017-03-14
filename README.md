@@ -21,6 +21,7 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 | **[cputemp](modules/cputemp)** | {temp} | Show current cpu temperature |
 | **[date](modules/date)** | {time} | Show defined date/time string |
 | **[disk](modules/disk)** | {total} {used} {free} {pused} {pfree} {uunit} {funit} {tunit} | Show space consumption of a disk |
+| **[gateway](modules/gateway)** | {iface} {ip} {ip_gw} {metric} {num_def_routes} | Show information about default gateways and routes |
 | **[iface](modules/iface)** | {ip} {ip_nm} {ip6} {ip6_nm} {mac} {mtu} {iface} {status} {status_or_ip} {status_or_ip6} | Show status and various values of network interface |
 | **[memory](modules/memory)** | {total} {used} {free} {pused} {pfree} {uunit} {funit} {tunit} | Show RAM memory consumption |
 | **[online](modules/online)** | {status} {status_or_ip} {ip} {country} {city} | Show online status with IP including your location |
