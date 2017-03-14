@@ -342,7 +342,7 @@ print_usage() {
 	echo "  -fe <p> <s> <v> <f>"
 	echo
 	echo "   Format example:"
-	echo "     -fe '{status} '=' 'up' 'It works ;-)' -fe '{status}' '!=' 'up' 'status is: {status}'"
+	echo "     -fe '{status}' '=' 'up' 'It works ;-)' -fe '{status}' '!=' 'up' 'status is: {status}'"
 	echo "   Explanation:"
 	echo "     <p>   is the placeholder value you want to check against."
 	printf "           valid placeholders: "
@@ -368,7 +368,7 @@ print_usage() {
 }
 
 print_version() {
-	echo "${appname} v1.7 by cytopia"
+	echo "${appname} v1.8 by cytopia"
 	echo "https://github.com/cytopia/i3blocks-modules"
 }
 
@@ -667,11 +667,6 @@ while [ $# -gt 0  ]; do
 
 			# 4/4 Check placeholder string
 			shift
-			if [ "${1}" = "" ]; then
-				echo "Error, -fe '{${fe_placeholder[${#fe_placeholder[@]}-1]}}' '${fe_sign[${#fe_sign[@]}-1]}' '${fe_value[${#fe_value[@]}-1]}' - format argument is empty."
-				echo "Type ${appname} -h for help"
-				exit 1
-			fi
 			fe_format+=("${1}")
 			;;
 		###
@@ -1038,7 +1033,9 @@ format="$( replace_placeholders "${format}" )"
 ### Output pango or plain style?
 ###
 if [ "${pango}" = "1" ]; then
-	echo "<span color=\"${color}\">${format}</span>"
+	if [ "${format}" != "" ]; then
+		echo "<span color=\"${color}\">${format}</span>"
+	fi
 else
 	echo "${format}"	# Long output
 	echo "${format}"	# short output
