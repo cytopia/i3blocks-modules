@@ -1,0 +1,23 @@
+# i3 bar section
+bar {
+	status_command		i3blocks
+	position			top
+	colors {
+		# <bar>
+		background	#222222
+		separator	#444444
+		statusline	#666666
+
+		# <workclass>		<border> <bg> <text>
+		focused_workspace	#da2263 #d70a53 #ffffff
+		active_workspace	#565656 #444444 #ffffff
+		inactive_workspace	#373737 #222222 #888888
+		urgent_workspace	#ec7ea4 #eb709b #ffffff
+	}
+
+	# tray_output none|primary|<output>
+	tray_output primary
+
+	# separator between bar sections
+	#separator_symbol " | "
+}
