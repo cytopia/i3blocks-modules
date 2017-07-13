@@ -9,6 +9,11 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 5. Use of global or specific **colors** for all types of stati
 6. Custom pango **markup** via color placeholders (`-np`)
 
+---
+
+**This repository is part of the [i3-utils](https://github.com/cytopia/i3-utils).**
+
+---
 
 ## Available Modules
 
