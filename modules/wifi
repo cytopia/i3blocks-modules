@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+PATH=/usr/local/bin:/usr/local/sbin:/bin:/sbin:/usr/bin:/usr/sbin
+
 ################################################################################
 #
 # CUSTOM PLUGIN SECTION
@@ -15,7 +17,7 @@
 ###
 appname="wifi"
 
-if [[ -n ${BLOCK_INSTANCE} ]]; then
+if [ ! -z ${BLOCK_INSTANCE+x} ]; then
 	iface="${BLOCK_INSTANCE}"
 else
 	iface="$( cat /proc/net/wireless 2>/dev/null | tail -1 | awk '{print $1}' | sed 's/://g' )"
@@ -208,7 +210,7 @@ custom_action() {
 				ip="$(     echo "${_ip}" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | head -1 )"
 				ip_nm="$(  echo "${_ip}" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/[0-9]+' | head -1 )"
 				ip6="$(    echo "${_ip}" | grep -oE 'inet6' | grep -oE '[0-9a-fA-F]*::.*/[0-9]+' | sed 's/\/.*//g' )"
-				ip6_nm="$( echo "${_ip}" | grep -oE 'inet6' | grep -oE '[0-9a-fA-F]*::.*/[0-9]+' )"
+				ip6_nm="$( echo "${_ip}" | grep -oE 'inet6' | grep -oE '[0-9a-fA-F]*::.*/[0-9]+' || true)"
 				mac="$(    echo "${_ip}" | grep 'link/' | grep -oE '([0-9a-fA-F]{2}:)+[0-9a-fA-F]{2}' | head -1 )"
 				mtu="$(    echo "${_ip}" | grep -oE 'mtu\s*[0-9]+' | sed 's/mtu\s//g' )"
 
