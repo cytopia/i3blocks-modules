@@ -14,7 +14,7 @@
 ### Custom Defines
 ###
 appname="ethereum"
-provider="${BLOCK_INSTANCE:-btce}"
+provider="${BLOCK_INSTANCE:-coinmarketcap}"
 format="E {usd}$"
 
 
@@ -57,25 +57,21 @@ arg_desc_long=(
 # bash variable names
 format_vars=(
 	"usd"
-	"eur"
 )
 
 # Format placeholders
 format_nodes=(
 	"{usd}"
-	"{eur}"
 )
 
 # Format description (for help display)
 format_descs=(
 	"Price in USD"
-	"Price in EUR"
 )
 
 # Format examples (for help display)
 format_examples=(
 	"-f \"E {usd} USD\""
-	"-f \"E {eur} EUR\""
 )
 
 
@@ -95,7 +91,7 @@ custom_action() {
 		exit 1
 	fi
 
-	if [ "${provider}" != "btce" ]; then
+	if [ "${provider}" != "coinmarketcap" ]; then
 	#if [ "${provider}" != "btce" ] && [ "${provider}" != "coindesk" ]; then
 		echo "Error, invalid provider argument: ${provider}"
 		exit 1
@@ -133,26 +129,22 @@ custom_action() {
 	###
 	### btce
 	###
-	if [ "${provider}" = "btce" ]; then
+	if [ "${provider}" = "coinmarketcap" ]; then
 		# Get live data online
-		if json_eur="$( curl -q https://btc-e.com/api/3/ticker/eth_eur 2>/dev/null )" &&
-			json_usd="$( curl -q https://btc-e.com/api/3/ticker/eth_usd 2>/dev/null )"; then
+		if json_usd="$( curl -q https://api.coinmarketcap.com/v1/ticker/ethereum/ 2>/dev/null )"; then
 
-			usd="$( echo "${json_usd}" | grep -oE 'last":[.0-9]+' | grep -oE '[0-9]+' | head -1 )"
-			eur="$( echo "${json_eur}" | grep -oE 'last":[.0-9]+' | grep -oE '[0-9]+' | head -1 )"
+			usd="$( echo "${json_usd}" | grep 'price_usd' | grep -oE '[0-9]+' | head -1 )"
 			# Cache results
-			printf "%s\n%s\n" "${usd}" "${eur}" > "${file}"
+			printf "%s\n%s\n" "${usd}" > "${file}"
 		# Get cached data
 		else
 			if [ -f "${file}" ]; then
 				json="$( cat "${file}" )"
 				usd="$( echo "${json}" | head -1 )"
-				eur="$( echo "${json}" | tail -1 )"
 				force_warn=1
 				format="[cache] ${format}"
 			else
 				usd="????"
-				eur="????"
 				force_crit=1
 			fi
 		fi
