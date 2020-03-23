@@ -83,6 +83,8 @@ format_vars=(
 	"signal"
 	"signal_unit"
 	"noise"
+	"bit_rate"
+	"bit_rate_unit"
 )
 
 # Format placeholders
@@ -106,6 +108,8 @@ format_nodes=(
 	"{signal}"
 	"{signal_unit}"
 	"{noise}"
+	"{bit_rate}"
+	"{bit_rate_unit}"
 )
 
 # Format description (for help display)
@@ -129,6 +133,8 @@ format_descs=(
 	"Wireless signal"
 	"Wireless signal unit"
 	"Wireless noise"
+	"Bit Rate"
+	"Bit Rate unit"
 )
 
 # Format examples (for help display)
@@ -177,6 +183,8 @@ custom_action() {
 	signal=
 	signal_unit=
 	noise=
+	bit_rate=
+	bit_rate_unit=
 
 	if [ ! -d "/sys/class/net/${iface}/" ] || [ ! -f "/sys/class/net/${iface}/operstate" ]; then
 
@@ -227,6 +235,8 @@ custom_action() {
 				signal="$( echo "${_iwconfig}" | grep -ioE 'Signal level=[-0-9]+' | sed 's/.*=//g' )"
 				signal_unit="dBm"
 				noise="$( cat /proc/net/wireless | grep "${iface}" | awk '{print $5}' )"
+				bit_rate="$( echo "${_iwconfig}" | grep -ioE 'Bit Rate=[0-9\.]+' | sed 's/.*=//g' | awk '{printf "%.0f", $1}' )"
+				bit_rate_unit="$( echo "${_iwconfig}" | grep -ioE 'Bit Rate=[0-9\.]+ [A-Z/]+' | sed 's/.*=//g' | grep -ioE '[A-Z/]+' )"
 
 				force_good=1
 
