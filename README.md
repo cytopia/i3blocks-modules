@@ -1,5 +1,8 @@
 # i3blocks modules
 
+[![Build Status](https://travis-ci.com/cytopia/i3blocks-modules.svg?branch=master)](https://travis-ci.com/cytopia/i3blocks-modules)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/cytopia/i3blocks-modules)
+
 High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/) modules.
 
 1. Use of **placeholders** to configure your output (`-f`)

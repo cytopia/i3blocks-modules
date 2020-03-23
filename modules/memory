@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:${PATH}"
+
 ################################################################################
 #
 # CUSTOM PLUGIN SECTION
@@ -101,7 +103,8 @@ format_examples=(
 ### Evaluate disk space
 ###
 custom_action() {
-	local _dump="$( free | grep 'Mem' )"
+	local _dump
+	_dump="$( free | grep 'Mem' || true )"
 
 	total="$( echo "${_dump}" | awk '{printf("%.2f\n", $2/(1024*1024))}' )"
 	free="$(  echo "${_dump}" | awk '{printf("%.2f\n", $7/(1024*1024))}' )"
@@ -180,6 +183,7 @@ pango=1
 ### source configuration file if it exists
 ###
 if [ -f "${HOME}/.config/i3blocks/contrib.conf" ]; then
+	# shellcheck disable=SC1090
 	. "${HOME}/.config/i3blocks/contrib.conf"
 fi
 
@@ -227,7 +231,7 @@ print_usage() {
 		echo "--------------------------------------------------------------------------------"
 
 		for (( i=0; i<${#arg_params[@]}; i++ )); do
-			printf "  %-13s%s\n" "${arg_params[$i]} ${arg_desc_val[$i]}" "${arg_desc_long[$i]}"
+			printf "  %-13s%s\\n" "${arg_params[$i]} ${arg_desc_val[$i]}" "${arg_desc_long[$i]}"
 		done
 		echo
 	fi
@@ -253,7 +257,7 @@ print_usage() {
 		for (( i=0; i<${#format_nodes[@]}; i++ )); do
 			printf "%s" "${format_nodes[$i]} "
 		done
-		printf "\n"
+		printf "\\n"
 		echo "           Note 1: placeholder values will be converted to integers"
 		echo "                   Any decimal places will simply be cut off."
 		echo "           Note 2: In equal mode (<s> '=') is a string regex comparison and"
@@ -322,12 +326,12 @@ print_usage() {
 
 	echo "  Available specific placeholders:"
 	for (( i=0; i<${#format_nodes[@]}; i++ )); do
-		printf "     %-15s%s\n" "${format_nodes[$i]}" "${format_descs[$i]}"
+		printf "     %-15s%s\\n" "${format_nodes[$i]}" "${format_descs[$i]}"
 	done
 
 	echo "  Format example:"
 	for (( i=0; i<${#format_examples[@]}; i++ )); do
-		printf "     %s\n" "${format_examples[$i]}"
+		printf "     %s\\n" "${format_examples[$i]}"
 	done
 	echo "  Default:"
 	echo "     -f \"${format}\""
@@ -349,7 +353,7 @@ print_usage() {
 	for (( i=0; i<${#format_nodes[@]}; i++ )); do
 		printf "%s" "${format_nodes[$i]} "
 	done
-	printf "\n"
+	printf "\\n"
 	echo "           Note 1: placeholder values will be converted to integers"
 	echo "                   Any decimal places will simply be cut off."
 	echo "           Note 2: In equal mode (<s> '=') is a string regex comparison and"
@@ -424,7 +428,7 @@ get_status_color() {
 				_color="${_color_good}"
 			fi
 		elif [ "${tg_sign[$i]}" = "!=" ]; then
-			if [[ "${pval}" != ${tg_value[$i]} ]]; then
+			if [[ "${pval}" != "${tg_value[$i]}" ]]; then
 				_color="${_color_good}"
 			fi
 		elif [ "${tg_sign[$i]}" = ">" ]; then
@@ -451,7 +455,7 @@ get_status_color() {
 				_color="${_color_info}"
 			fi
 		elif [ "${ti_sign[$i]}" = "!=" ]; then
-			if [[ "${pval}" != ${ti_value[$i]} ]]; then
+			if [[ "${pval}" != "${ti_value[$i]}" ]]; then
 				_color="${_color_info}"
 			fi
 		elif [ "${ti_sign[$i]}" = ">" ]; then
@@ -478,7 +482,7 @@ get_status_color() {
 				_color="${_color_warn}"
 			fi
 		elif [ "${tw_sign[$i]}" = "!=" ]; then
-			if [[ "${pval}" != ${tw_value[$i]} ]]; then
+			if [[ "${pval}" != "${tw_value[$i]}" ]]; then
 				_color="${_color_warn}"
 			fi
 		elif [ "${tw_sign[$i]}" = ">" ]; then
@@ -507,7 +511,7 @@ get_status_color() {
 				_color="${_color_crit}"
 			fi
 		elif [ "${tc_sign[$i]}" = "!=" ]; then
-			if [[ "${pval}" != ${tc_value[$i]} ]]; then
+			if [[ "${pval}" != "${tc_value[$i]}" ]]; then
 				_color="${_color_crit}"
 			fi
 		elif [ "${tc_sign[$i]}" = ">" ]; then
@@ -548,7 +552,7 @@ replace_placeholders() {
 				_format="${fe_format[$i]}"
 			fi
 		elif [ "${fe_sign[$i]}" = "!=" ]; then
-			if [[ "${pval}" != ${fe_value[$i]} ]]; then
+			if [[ "${pval}" != "${fe_value[$i]}" ]]; then
 				_format="${fe_format[$i]}"
 			fi
 		elif [ "${fe_sign[$i]}" = ">" ]; then

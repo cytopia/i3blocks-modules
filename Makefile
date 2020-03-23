@@ -1,8 +1,23 @@
+ifneq (,)
+.error This Makefile requires GNU Make.
+endif
+
+# -------------------------------------------------------------------------------------------------
+# Default configuration
+# -------------------------------------------------------------------------------------------------
+.PHONY: help lint install uninstall
+
 # Configuration
 SHELL = /bin/sh
 MKDIR_P = mkdir -p
 
-all:
+FL_VERSION = 0.2
+FL_IGNORES = .git/,.github/
+
+# -------------------------------------------------------------------------------------------------
+# Default Target
+# -------------------------------------------------------------------------------------------------
+help:
 	@echo "Type 'make install' or 'make uninstall'"
 	@echo
 	@echo "make install"
@@ -10,6 +25,49 @@ all:
 	@echo ""
 	@echo "make uninstall"
 	@echo "   Will uninstall files from ~/.config/i3blocks-modules"
+
+
+# -------------------------------------------------------------------------------------------------
+# Targets
+# -------------------------------------------------------------------------------------------------
+lint:
+	@$(MAKE) --no-print-directory _lint-file
+	@$(MAKE) --no-print-directory _lint-bash
+
+_lint-file:
+	@# Lint all files
+	@echo "################################################################################"
+	@echo "# File lint"
+	@echo "################################################################################"
+	@docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/data cytopia/file-lint:$(FL_VERSION) file-cr --text --ignore '$(FL_IGNORES)' --path .
+	@docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/data cytopia/file-lint:$(FL_VERSION) file-crlf --text --ignore '$(FL_IGNORES)' --path .
+	@docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/data cytopia/file-lint:$(FL_VERSION) file-trailing-single-newline --text --ignore '$(FL_IGNORES)' --path .
+	@docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/data cytopia/file-lint:$(FL_VERSION) file-trailing-space --text --ignore '$(FL_IGNORES)' --path .
+	@docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/data cytopia/file-lint:$(FL_VERSION) file-utf8 --text --ignore '$(FL_IGNORES)' --path .
+	@docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/data cytopia/file-lint:$(FL_VERSION) file-utf8-bom --text --ignore '$(FL_IGNORES)' --path .
+	@echo
+
+_lint-bash:
+	@# Lint all files
+	@echo "################################################################################"
+	@echo "# File bash"
+	@echo "################################################################################"
+	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/backlight
+	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/battery
+	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/bitcoin
+	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/bitcoincash
+	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/cpu
+	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/cputemp
+	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/date
+	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/disk
+	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/ethereum
+	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/gateway
+	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/iface
+	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/memory
+	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/online
+	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/volume
+	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/wifi
+
 
 install:
 	@# root check
@@ -38,7 +96,7 @@ install:
 	install -m 0755 modules/online      "${HOME}/.config/i3blocks-modules/bin/online"
 	install -m 0755 modules/volume      "${HOME}/.config/i3blocks-modules/bin/volume"
 	install -m 0755 modules/wifi        "${HOME}/.config/i3blocks-modules/bin/wifi"
-#
+
 
 uninstall:
 	@# root check
@@ -51,6 +109,7 @@ uninstall:
 	rm -f "${HOME}/.config/i3blocks-modules/bin/backlight"
 	rm -f "${HOME}/.config/i3blocks-modules/bin/battery"
 	rm -f "${HOME}/.config/i3blocks-modules/bin/bitcoin"
+	rm -f "${HOME}/.config/i3blocks-modules/bin/bitcoincash"
 	rm -f "${HOME}/.config/i3blocks-modules/bin/cpu"
 	rm -f "${HOME}/.config/i3blocks-modules/bin/cputemp"
 	rm -f "${HOME}/.config/i3blocks-modules/bin/date"

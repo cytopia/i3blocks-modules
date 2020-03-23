@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PATH=/usr/local/bin:/usr/local/sbin:/bin:/sbin:/usr/bin:/usr/sbin
+PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:${PATH}"
 
 ################################################################################
 #
@@ -17,10 +17,10 @@ PATH=/usr/local/bin:/usr/local/sbin:/bin:/sbin:/usr/bin:/usr/sbin
 ###
 appname="wifi"
 
-if [ ! -z ${BLOCK_INSTANCE+x} ]; then
+if [ -n "${BLOCK_INSTANCE:-}" ]; then
 	iface="${BLOCK_INSTANCE}"
 else
-	iface="$( cat /proc/net/wireless 2>/dev/null | tail -1 | awk '{print $1}' | sed 's/://g' )"
+	iface="$( tail -1 /proc/net/wireless | awk '{print $1}' | sed 's/://g' )"
 fi
 
 format=" {status_or_ip} ({ssid} {quality}%)"
@@ -234,7 +234,7 @@ custom_action() {
 				quality="$( awk -v cur="$(echo "${_iwconfig}"|grep -oE 'Link Quality=[/0-9]+'|grep -oE '[0-9]+'|head -1)" -v max="$(echo "${_iwconfig}"|grep -oE 'Link Quality=[/0-9]+'|grep -oE '[0-9]+'|tail -1)" 'BEGIN{printf("%0.f", cur*100/max)}')"
 				signal="$( echo "${_iwconfig}" | grep -ioE 'Signal level=[-0-9]+' | sed 's/.*=//g' )"
 				signal_unit="dBm"
-				noise="$( cat /proc/net/wireless | grep "${iface}" | awk '{print $5}' )"
+				noise="$( grep "${iface}" /proc/net/wireless | awk '{print $5}' )"
 				bit_rate="$( echo "${_iwconfig}" | grep -ioE 'Bit Rate=[0-9\.]+' | sed 's/.*=//g' | awk '{printf "%.0f", $1}' )"
 				bit_rate_unit="$( echo "${_iwconfig}" | grep -ioE 'Bit Rate=[0-9\.]+ [A-Z/]+' | sed 's/.*=//g' | grep -ioE '[A-Z/]+' )"
 
@@ -312,6 +312,7 @@ pango=1
 ### source configuration file if it exists
 ###
 if [ -f "${HOME}/.config/i3blocks/contrib.conf" ]; then
+	# shellcheck disable=SC1090
 	. "${HOME}/.config/i3blocks/contrib.conf"
 fi
 
@@ -359,7 +360,7 @@ print_usage() {
 		echo "--------------------------------------------------------------------------------"
 
 		for (( i=0; i<${#arg_params[@]}; i++ )); do
-			printf "  %-13s%s\n" "${arg_params[$i]} ${arg_desc_val[$i]}" "${arg_desc_long[$i]}"
+			printf "  %-13s%s\\n" "${arg_params[$i]} ${arg_desc_val[$i]}" "${arg_desc_long[$i]}"
 		done
 		echo
 	fi
@@ -385,7 +386,7 @@ print_usage() {
 		for (( i=0; i<${#format_nodes[@]}; i++ )); do
 			printf "%s" "${format_nodes[$i]} "
 		done
-		printf "\n"
+		printf "\\n"
 		echo "           Note 1: placeholder values will be converted to integers"
 		echo "                   Any decimal places will simply be cut off."
 		echo "           Note 2: In equal mode (<s> '=') is a string regex comparison and"
@@ -454,12 +455,12 @@ print_usage() {
 
 	echo "  Available specific placeholders:"
 	for (( i=0; i<${#format_nodes[@]}; i++ )); do
-		printf "     %-15s%s\n" "${format_nodes[$i]}" "${format_descs[$i]}"
+		printf "     %-15s%s\\n" "${format_nodes[$i]}" "${format_descs[$i]}"
 	done
 
 	echo "  Format example:"
 	for (( i=0; i<${#format_examples[@]}; i++ )); do
-		printf "     %s\n" "${format_examples[$i]}"
+		printf "     %s\\n" "${format_examples[$i]}"
 	done
 	echo "  Default:"
 	echo "     -f \"${format}\""
@@ -481,7 +482,7 @@ print_usage() {
 	for (( i=0; i<${#format_nodes[@]}; i++ )); do
 		printf "%s" "${format_nodes[$i]} "
 	done
-	printf "\n"
+	printf "\\n"
 	echo "           Note 1: placeholder values will be converted to integers"
 	echo "                   Any decimal places will simply be cut off."
 	echo "           Note 2: In equal mode (<s> '=') is a string regex comparison and"
@@ -556,7 +557,7 @@ get_status_color() {
 				_color="${_color_good}"
 			fi
 		elif [ "${tg_sign[$i]}" = "!=" ]; then
-			if [[ "${pval}" != ${tg_value[$i]} ]]; then
+			if [[ "${pval}" != "${tg_value[$i]}" ]]; then
 				_color="${_color_good}"
 			fi
 		elif [ "${tg_sign[$i]}" = ">" ]; then
@@ -583,7 +584,7 @@ get_status_color() {
 				_color="${_color_info}"
 			fi
 		elif [ "${ti_sign[$i]}" = "!=" ]; then
-			if [[ "${pval}" != ${ti_value[$i]} ]]; then
+			if [[ "${pval}" != "${ti_value[$i]}" ]]; then
 				_color="${_color_info}"
 			fi
 		elif [ "${ti_sign[$i]}" = ">" ]; then
@@ -610,7 +611,7 @@ get_status_color() {
 				_color="${_color_warn}"
 			fi
 		elif [ "${tw_sign[$i]}" = "!=" ]; then
-			if [[ "${pval}" != ${tw_value[$i]} ]]; then
+			if [[ "${pval}" != "${tw_value[$i]}" ]]; then
 				_color="${_color_warn}"
 			fi
 		elif [ "${tw_sign[$i]}" = ">" ]; then
@@ -639,7 +640,7 @@ get_status_color() {
 				_color="${_color_crit}"
 			fi
 		elif [ "${tc_sign[$i]}" = "!=" ]; then
-			if [[ "${pval}" != ${tc_value[$i]} ]]; then
+			if [[ "${pval}" != "${tc_value[$i]}" ]]; then
 				_color="${_color_crit}"
 			fi
 		elif [ "${tc_sign[$i]}" = ">" ]; then
@@ -680,7 +681,7 @@ replace_placeholders() {
 				_format="${fe_format[$i]}"
 			fi
 		elif [ "${fe_sign[$i]}" = "!=" ]; then
-			if [[ "${pval}" != ${fe_value[$i]} ]]; then
+			if [[ "${pval}" != "${fe_value[$i]}" ]]; then
 				_format="${fe_format[$i]}"
 			fi
 		elif [ "${fe_sign[$i]}" = ">" ]; then
