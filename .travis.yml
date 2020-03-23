@@ -1,0 +1,19 @@
+---
+
+###
+### Enable sudo (required for docker service)
+###
+sudo: required
+
+
+###
+### Language
+###
+language: minimal
+
+
+###
+### Lint
+###
+before_script:
+  - make lint
