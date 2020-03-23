@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:${PATH}"
+
 ################################################################################
 #
 # CUSTOM PLUGIN SECTION
@@ -96,18 +98,22 @@ format_examples=(
 ### Evaluate disk space
 ###
 custom_action() {
+	local _cpufreq
+	local _percent
+	local _usage
+
 	if ! command -v cpufreq-info >/dev/null 2>&1; then
 		echo "Error, cpufreq-info binary not found, but required"
 		exit 1
 	fi
 
-	local _cpufreq="$( cpufreq-info -fm )"
-	local _percent="$( awk -v a="$(awk '/cpu /{print $2+$4,$2+$4+$5}' /proc/stat; sleep 1)" '/cpu /{split(a,b," "); print 100*($2+$4-b[1])/($2+$4+$5-b[2])}'  /proc/stat )"
-	local _usage="$( uptime  | sed 's/.*:\s*//g' )"
+	_cpufreq="$( cpufreq-info -fm )"
+	_percent="$( awk -v a="$(awk '/cpu /{print $2+$4,$2+$4+$5}' /proc/stat; sleep 1)" '/cpu /{split(a,b," "); print 100*($2+$4-b[1])/($2+$4+$5-b[2])}'  /proc/stat )"
+	_usage="$( uptime  | sed 's/.*:\s*//g' )"
 
-	speed="$( echo "${_cpufreq}" | grep -oE '[.0-9]+' )"
-	uspeed="$( echo "${_cpufreq}" | sed 's/[.0-9]*\s*//g' )"
-	percent="$( LC_ALL=C printf "%02.*f\n" "0" "${_percent}" )"
+	speed="$( echo "${_cpufreq}" | grep -oE '[.0-9]+' || true )"
+	uspeed="${_cpufreq//*[[:space:]]/}"
+	percent="$( LC_ALL=C printf "%02.*f\\n" "0" "${_percent}" )"
 	usage5="$(  echo "${_usage}" | awk '{print $1}' | sed 's/,//g' )"
 	usage10="$( echo "${_usage}" | awk '{print $2}' | sed 's/,//g' )"
 	usage15="$( echo "${_usage}" | awk '{print $3}' | sed 's/,//g' )"
@@ -186,6 +192,7 @@ pango=1
 ### source configuration file if it exists
 ###
 if [ -f "${HOME}/.config/i3blocks/contrib.conf" ]; then
+	# shellcheck disable=SC1090
 	. "${HOME}/.config/i3blocks/contrib.conf"
 fi
 
@@ -233,7 +240,7 @@ print_usage() {
 		echo "--------------------------------------------------------------------------------"
 
 		for (( i=0; i<${#arg_params[@]}; i++ )); do
-			printf "  %-13s%s\n" "${arg_params[$i]} ${arg_desc_val[$i]}" "${arg_desc_long[$i]}"
+			printf "  %-13s%s\\n" "${arg_params[$i]} ${arg_desc_val[$i]}" "${arg_desc_long[$i]}"
 		done
 		echo
 	fi
@@ -259,7 +266,7 @@ print_usage() {
 		for (( i=0; i<${#format_nodes[@]}; i++ )); do
 			printf "%s" "${format_nodes[$i]} "
 		done
-		printf "\n"
+		printf "\\n"
 		echo "           Note 1: placeholder values will be converted to integers"
 		echo "                   Any decimal places will simply be cut off."
 		echo "           Note 2: In equal mode (<s> '=') is a string regex comparison and"
@@ -328,12 +335,12 @@ print_usage() {
 
 	echo "  Available specific placeholders:"
 	for (( i=0; i<${#format_nodes[@]}; i++ )); do
-		printf "     %-15s%s\n" "${format_nodes[$i]}" "${format_descs[$i]}"
+		printf "     %-15s%s\\n" "${format_nodes[$i]}" "${format_descs[$i]}"
 	done
 
 	echo "  Format example:"
 	for (( i=0; i<${#format_examples[@]}; i++ )); do
-		printf "     %s\n" "${format_examples[$i]}"
+		printf "     %s\\n" "${format_examples[$i]}"
 	done
 	echo "  Default:"
 	echo "     -f \"${format}\""
@@ -355,7 +362,7 @@ print_usage() {
 	for (( i=0; i<${#format_nodes[@]}; i++ )); do
 		printf "%s" "${format_nodes[$i]} "
 	done
-	printf "\n"
+	printf "\\n"
 	echo "           Note 1: placeholder values will be converted to integers"
 	echo "                   Any decimal places will simply be cut off."
 	echo "           Note 2: In equal mode (<s> '=') is a string regex comparison and"
@@ -430,7 +437,7 @@ get_status_color() {
 				_color="${_color_good}"
 			fi
 		elif [ "${tg_sign[$i]}" = "!=" ]; then
-			if [[ "${pval}" != ${tg_value[$i]} ]]; then
+			if [[ "${pval}" != "${tg_value[$i]}" ]]; then
 				_color="${_color_good}"
 			fi
 		elif [ "${tg_sign[$i]}" = ">" ]; then
@@ -457,7 +464,7 @@ get_status_color() {
 				_color="${_color_info}"
 			fi
 		elif [ "${ti_sign[$i]}" = "!=" ]; then
-			if [[ "${pval}" != ${ti_value[$i]} ]]; then
+			if [[ "${pval}" != "${ti_value[$i]}" ]]; then
 				_color="${_color_info}"
 			fi
 		elif [ "${ti_sign[$i]}" = ">" ]; then
@@ -484,7 +491,7 @@ get_status_color() {
 				_color="${_color_warn}"
 			fi
 		elif [ "${tw_sign[$i]}" = "!=" ]; then
-			if [[ "${pval}" != ${tw_value[$i]} ]]; then
+			if [[ "${pval}" != "${tw_value[$i]}" ]]; then
 				_color="${_color_warn}"
 			fi
 		elif [ "${tw_sign[$i]}" = ">" ]; then
@@ -513,7 +520,7 @@ get_status_color() {
 				_color="${_color_crit}"
 			fi
 		elif [ "${tc_sign[$i]}" = "!=" ]; then
-			if [[ "${pval}" != ${tc_value[$i]} ]]; then
+			if [[ "${pval}" != "${tc_value[$i]}" ]]; then
 				_color="${_color_crit}"
 			fi
 		elif [ "${tc_sign[$i]}" = ">" ]; then
@@ -554,7 +561,7 @@ replace_placeholders() {
 				_format="${fe_format[$i]}"
 			fi
 		elif [ "${fe_sign[$i]}" = "!=" ]; then
-			if [[ "${pval}" != ${fe_value[$i]} ]]; then
+			if [[ "${pval}" != "${fe_value[$i]}" ]]; then
 				_format="${fe_format[$i]}"
 			fi
 		elif [ "${fe_sign[$i]}" = ">" ]; then
