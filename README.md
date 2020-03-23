@@ -15,6 +15,7 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 
 ---
 
+
 ## Available Modules
 
 | Module | Placeholders | Description |
@@ -32,7 +33,7 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 | **[memory](modules/memory)** | {total} {used} {free} {pused} {pfree} {uunit} {funit} {tunit} | Show RAM memory consumption |
 | **[online](modules/online)** | {status} {status_or_ip} {ip} {country} {city} | Show online status with IP including your location |
 | **[volume](modules/volume)** | {volume} {muted} {port} {dev_api} {dev_bus} {dev_form_factor} {dev_profile} {dev_icon_name} {dev_description} {alsa_name} {alsa_card} {alsa_driver} {alsa_mixer} {icon} | Show info about current volume (auto-changes when headphone or usb/bluetooth is connected) |
-| **[wifi](modules/wifi)** | {ip} {ip_nm} {ip6} {ip6_nm} {mac} {mtu} {iface} {status} {status_or_ip} {status_or_ip6} {ssid} {freq} {freq_unit} {tx_power} {tx_power_unit} {quality} {signal} {signal_unit} {noise} | Show info about your wireless connection |
+| **[wifi](modules/wifi)** | {ip} {ip_nm} {ip6} {ip6_nm} {mac} {mtu} {iface} {status} {status_or_ip} {status_or_ip6} {ssid} {freq} {freq_unit} {tx_power} {tx_power_unit} {quality} {signal} {signal_unit} {noise} {bit_rate_} {bit_rate_unit} | Show info about your wireless connection |
 
 1. All placeholders can be used in the format argument to format your output.<br/> (e.g.: `-f 'Signal: {percent}%'`)
 2. All placeholders can be checked and according to their value the output will differ<br/>(e.g.: `-fe '{status}' '=' 'up' '{iface} {ip} ({ssid} {signal}%)'`)
@@ -48,7 +49,6 @@ Additionally each module has color placeholders in case you want to create your 
 * {color_info}
 
 
-
 ## Threshold and stati
 
 Depending on the status of a module (self-evaluated or custom threshold comparison), the output text will be shown in different colors. There are different ways to determine the final status:
@@ -61,6 +61,7 @@ Depending on the status of a module (self-evaluated or custom threshold comparis
   - warning
   - critical
 
+
 ## Placeholder format examples
 
 There are two types of placeholders:
@@ -72,7 +73,7 @@ There are two types of placeholders:
 
 Use placeholders to specify how the module should output the provided information:
 
-```shell
+```bash
 $ wifi -f 'WIFI: {ip} {ssid} ({signal}%)'
 ```
 
@@ -82,7 +83,7 @@ Sometime however, you want the output to be dynamic in case the module reports a
 
 For this to overcome, you can evaluate *placeholders* that a module provides and decide upon their value what output format you want to have:
 
-```shell
+```bash
 $ wifi -fe '{status}' '=' 'up' '{iface} {ip} ({ssid})' -fe '{status}' '!=' 'up' 'WIFI: down'
 ```
 In the above example you will have different outputs based on whether the Wifi interface is up or not up.
@@ -91,18 +92,18 @@ In the above example you will have different outputs based on whether the Wifi i
 ## Threshold examples
 
 Colorize date with 'good status' during weekends:
-```shell
+```bash
 date -f " {time}" -t "%a, %d.%m.%Y" -tg '{time}' '=' '^(Sat|Sun).*'
 ```
 Colorize time with warning state after 23 o'clock and between 0 and 3 with critical state:
-```shell
+```bash
 date -f " {time}" -t "%H:%M" -tw '{time}' '=' '^23.*' -tc '{time}' '=' '^0(0|1|2|3).*'
 ```
 
 
 ## i3blocks example:
 
-```shell
+```bash
 # output:  51°C
 # shows 'goog color' at temperatures below 71 degrees
 # shows 'warn color' at temperatures above 70 degrees
@@ -158,6 +159,7 @@ All modules are designed to work in the same way. The only difference are their 
 
 Have a look at the [doc/](doc/) folder for usage.
 
+
 ## Colors
 
 Every module can set each own set of colors for
@@ -172,7 +174,7 @@ You can use parameters to overwrite these colors on a per module base. You can h
 
 `~/.config/i3blocks-modules/contrib.conf:`
 
-```shell
+```bash
 # i3blocks contrib module configuration
 
 # Set your default colors
@@ -184,3 +186,10 @@ color_info="#FCE94F"
 ```
 
 If the above file is present, those colors are used as the defaults.
+
+
+## License
+
+**[MIT License](LICENSE)**
+
+Copyright (c) 2017 [cytopia](https://github.com/cytopia)
