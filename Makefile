@@ -11,7 +11,7 @@ endif
 SHELL = /bin/sh
 MKDIR_P = mkdir -p
 
-FL_VERSION = 0.2
+FL_VERSION = 0.3
 FL_IGNORES = .git/,.github/
 
 # -------------------------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ lint:
 	@$(MAKE) --no-print-directory _lint-file
 	@$(MAKE) --no-print-directory _lint-bash
 
-_lint-file:
+_lint-file: _pull-docker-filelint
 	@# Lint all files
 	@echo "################################################################################"
 	@echo "# File lint"
@@ -47,7 +47,7 @@ _lint-file:
 	@docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/data cytopia/file-lint:$(FL_VERSION) file-utf8-bom --text --ignore '$(FL_IGNORES)' --path .
 	@echo
 
-_lint-bash:
+_lint-bash: _pull-docker-shellcheck
 	@# Lint all files
 	@echo "################################################################################"
 	@echo "# File bash"
@@ -125,3 +125,14 @@ uninstall:
 	@# Remove dirs
 	rmdir "${HOME}/.config/i3blocks-modules/bin"
 	rmdir "${HOME}/.config/i3blocks-modules"
+
+
+# -------------------------------------------------------------------------------------------------
+# Helper Target
+# -------------------------------------------------------------------------------------------------
+
+_pull-docker-filelint:
+	docker pull cytopia/file-lint:$(FL_VERSION)
+
+_pull-docker-shellcheck:
+	docker pull koalaman/shellcheck:stable
