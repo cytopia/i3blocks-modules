@@ -713,7 +713,7 @@ while [ $# -gt 0  ]; do
 		###
 		### Threshold good
 		###
-		-tg${th_chk})
+		"-tg${th_chk}")
 			# 1/3 Check placeholder
 			shift
 			if [ "${1}" = "" ]; then
@@ -768,7 +768,7 @@ while [ $# -gt 0  ]; do
 		###
 		### Threshold info
 		###
-		-ti${th_chk})
+		"-ti${th_chk}")
 			# 1/3 Check placeholder
 			shift
 			if [ "${1}" = "" ]; then
@@ -823,7 +823,7 @@ while [ $# -gt 0  ]; do
 		###
 		### Threshold warning
 		###
-		-tw${th_chk})
+		"-tw${th_chk}")
 			# 1/3 Check placeholder
 			shift
 			if [ "${1}" = "" ]; then
@@ -878,7 +878,7 @@ while [ $# -gt 0  ]; do
 		###
 		### Threshold critical
 		###
-		-tc${th_chk})
+		"-tc${th_chk}")
 			# 1/3 Check placeholder
 			shift
 			if [ "${1}" = "" ]; then
