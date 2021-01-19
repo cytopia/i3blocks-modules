@@ -65,6 +65,7 @@ _lint-bash: _pull-docker-shellcheck
 	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/iface
 	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/memory
 	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/online
+	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/stock
 	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/volume
 	docker run --rm $$(tty -s && echo "-it" || echo) -v $(PWD):/mnt koalaman/shellcheck:stable --exclude=SC2034 --shell=bash modules/wifi
 
@@ -94,6 +95,7 @@ install:
 	install -m 0755 modules/iface       "${HOME}/.config/i3blocks-modules/bin/iface"
 	install -m 0755 modules/memory      "${HOME}/.config/i3blocks-modules/bin/memory"
 	install -m 0755 modules/online      "${HOME}/.config/i3blocks-modules/bin/online"
+	install -m 0755 modules/stock       "${HOME}/.config/i3blocks-modules/bin/stock"
 	install -m 0755 modules/volume      "${HOME}/.config/i3blocks-modules/bin/volume"
 	install -m 0755 modules/wifi        "${HOME}/.config/i3blocks-modules/bin/wifi"
 
@@ -119,6 +121,7 @@ uninstall:
 	rm -f "${HOME}/.config/i3blocks-modules/bin/iface"
 	rm -f "${HOME}/.config/i3blocks-modules/bin/memory"
 	rm -f "${HOME}/.config/i3blocks-modules/bin/online"
+	rm -f "${HOME}/.config/i3blocks-modules/bin/stock"
 	rm -f "${HOME}/.config/i3blocks-modules/bin/volume"
 	rm -f "${HOME}/.config/i3blocks-modules/bin/wifi"
 

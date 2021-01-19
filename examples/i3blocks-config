@@ -88,6 +88,11 @@ command=~/.config/i3blocks-modules/bin/backlight
 instance=intel_backlight
 interval=2
 
+[stock]
+command=~/.config/i3blocks-modules/bin/stock -f 'TLSA {usd}$' -tc '{usd}' '<' 820
+instance=TLSA
+interval=180
+
 [volume]
 command=~/.config/i3blocks-modules/bin/volume -f "{icon} {volume}%" -id "" -im "🔇" -fe '{port}' '=' 'headphone' '{icon}  {volume}%' -fe '{dev_bus}' '=' 'bluetooth' '{icon}  {volume}%' -tw '{muted}' '=' 'yes'
 interval=1
