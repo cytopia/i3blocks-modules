@@ -98,15 +98,47 @@ custom_action() {
 		mkdir "${cache}"
 	fi
 
+	####
+	#### Google finance
+	####
+	## Get live data online
+	#if raw="$( curl -sS \
+	#	-A "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5" \
+	#	"https://www.google.com/search?q=NSE:${stock}" \
+	#)"; then
+	#	usd="$( echo "${raw}" | grep -E '\([.,0-9]+ %\)' | grep -Eo '>[,.0-9]+' | tail -1 | grep -Eo '[.,0-9]+' )"
+	#	# Cache results
+	#	printf "%s\\n" "${usd}" > "${file}"
+	## Get cached data
+	#else
+	#	if [ -f "${file}" ]; then
+	#		raw="$( cat "${file}" )"
+	#		usd="$( echo "${raw}" | head -1 )"
+	#		format="[cache] ${format}"
+	#		force_warn=1
+	#	else
+	#		usd="????"
+	#		eur="????"
+	#		force_crit=1
+	#	fi
+	#fi
+
 	###
-	### Google finance
+	### Yahoo finance
 	###
 	# Get live data online
+	url="https://finance.yahoo.com/quote/${stock}/"
 	if raw="$( curl -sS \
 		-A "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5" \
-		"https://www.google.com/search?q=NSE:${stock}" \
+		"${url}" \
 	)"; then
-		usd="$( echo "${raw}" | grep -E '\([.,0-9]+ %\)' | grep -Eo '>[,.0-9]+' | tail -1 | grep -Eo '[.,0-9]+' )"
+		usd="$( \
+			echo "${raw}" \
+			| grep -Eo 'class="Trsdu.+>([0-9]+[.,][0-9]+)</span>' \
+			| grep -Eo '>([0-9]+[.,][0-9]+)<' \
+			| grep -Eo '([0-9]+[.,][0-9]+)' \
+			| head -1 \
+		)"
 		# Cache results
 		printf "%s\\n" "${usd}" > "${file}"
 	# Get cached data
@@ -122,6 +154,7 @@ custom_action() {
 			force_crit=1
 		fi
 	fi
+
 }
 
 
