@@ -61,7 +61,7 @@ interval=60
 
 [ethereum]
 command=~/.config/i3blocks-modules/bin/ethereum -f 'E {eur}€' -tc '{eur}' '<' 220
-instance=btce
+instance=ethereumprice
 interval=60
 
 [online]
