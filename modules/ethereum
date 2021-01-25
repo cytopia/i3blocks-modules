@@ -16,7 +16,7 @@ PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:${PATH}"
 ### Custom Defines
 ###
 appname="ethereum"
-provider="${BLOCK_INSTANCE:-coinmarketcap}"
+provider="${BLOCK_INSTANCE:-ethereumprice}"
 format="E {usd}$"
 
 
@@ -93,7 +93,7 @@ custom_action() {
 		exit 1
 	fi
 
-	if [ "${provider}" != "coinmarketcap" ]; then
+	if [ "${provider}" != "ethereumprice" ]; then
 	#if [ "${provider}" != "btce" ] && [ "${provider}" != "coindesk" ]; then
 		echo "Error, invalid provider argument: ${provider}"
 		exit 1
@@ -131,11 +131,11 @@ custom_action() {
 	###
 	### btce
 	###
-	if [ "${provider}" = "coinmarketcap" ]; then
+	if [ "${provider}" = "ethereumprice" ]; then
 		# Get live data online
-		if json_usd="$( curl -q https://api.coinmarketcap.com/v1/ticker/ethereum/ 2>/dev/null )"; then
+		if json_usd="$( curl -q https://ethereumprice.org/ 2>/dev/null )"; then
 
-			usd="$( echo "${json_usd}" | grep 'price_usd' | grep -oE '[0-9]+' | head -1 )"
+			usd="$( echo "${json_usd}" | grep -Eo 'value="[0-9]+\.[0-9]+' | awk -F'"' '{print $2}' | awk -F'.' '{print $1}' )"
 			# Cache results
 			printf "%s\\n" "${usd}" > "${file}"
 		# Get cached data
