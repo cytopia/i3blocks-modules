@@ -33,9 +33,6 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 
 ## :tada: Install
 
-* Config will be installed into: `~/.config/i3blocks-modules/config` of the current user.
-* Modules will be installed into: `~/.local/share/i3blocks-modules/` of the current user.
-
 ```bash
 make install
 ```
@@ -73,6 +70,16 @@ make uninstall
 
 
 ## :information_source: Documentation
+
+### Install paths
+
+When using the provided Makefile to install i3blocks-modules, it will do so into the following locations:
+
+| What                         | Install location                   |
+|------------------------------|------------------------------------|
+| i3blocks-modules config file | `~/.config/i3blocks-modules/conf`  |
+| i3blocks-modules modules     | `~/.local/share/i3blocks-modules/` |
+
 
 ### Format string
 
