@@ -105,18 +105,27 @@ Depending on the status of a module (self-evaluated or custom threshold comparis
 
 ### Status colors
 
-Status colors can be set via module arguments as such:
+Every module can set its own set of colors for available stati
+
+* Default
+* Good status
+* Info status
+* Warning status
+* Critical status
+
+Stati can be set via the following module arguments:
+
 ```
-  -cd <code>   Default color (hexadecimal color code)
-               Default value is: #666666
-  -cg <code>   Good color (hexadecimal color code)
-               Default value is: #88b090
-  -cw <code>   Warning color (hexadecimal color code)
-               Default value is: #ccdc90
-  -cc <code>   Critical color (hexadecimal color code)
-               Default value is: #e89393
-  -ci <code>   Info color (hexadecimal color code)
-               Default value is: #fce94f
+-cd <code>   Default color (hexadecimal color code)
+             Default value is: #666666
+-cg <code>   Good color (hexadecimal color code)
+             Default value is: #88b090
+-cw <code>   Warning color (hexadecimal color code)
+             Default value is: #ccdc90
+-cc <code>   Critical color (hexadecimal color code)
+             Default value is: #e89393
+-ci <code>   Info color (hexadecimal color code)
+             Default value is: #fce94f
 ```
 
 Instead of setting the color on each module separately, you can also use the `i3blocks-modules` configuration file to set it globally in `~/.config/i3blocks-modules/config`.
@@ -216,35 +225,6 @@ interval=1
 ```
 
 
-### Set *status colors*
-
-Every module can set its own set of colors for available stati
-
-* Default
-* Good status
-* Info status
-* Warning status
-* Critical status
-
-Stati can be set via arguments as such:
-```
-  -cd <code>   Default color (hexadecimal color code)
-               Default value is: #666666
-  -cg <code>   Good color (hexadecimal color code)
-               Default value is: #88b090
-  -cw <code>   Warning color (hexadecimal color code)
-               Default value is: #ccdc90
-  -cc <code>   Critical color (hexadecimal color code)
-               Default value is: #e89393
-  -ci <code>   Info color (hexadecimal color code)
-               Default value is: #fce94f
-```
-
-Instead of setting the color on each module separately, you can also use the `i3blocks-modules` configuration file to set it globally
-
-`~/.config/i3blocks-modules/config:`
-
-
 
 ## :wrench:  Configuration file
 
@@ -281,7 +261,7 @@ If the above file is present, those colors are used as the defaults.
 # shows 'warn color' at temperatures above 70 degrees
 # shows 'crit color' at temperatures above 90 degrees
 [cputemp]
-command=~/.config/i3blocks-modules/cputemp -tg '{temp}' '<' 71 -tw '{temp}' '>' 70 -tc '{temp}' '>' 90
+command=~/.local/share/i3blocks-modules/cputemp -tg '{temp}' '<' 71 -tw '{temp}' '>' 70 -tc '{temp}' '>' 90
 instance=Core 0
 interval=2
 
@@ -295,7 +275,7 @@ interval=2
 # shows different icons depending on remaining percent
 # shows different icon for charging and discharging
 [battery]
-command=~/.config/i3blocks-modules/battery -fe '{percent}' '<' 90 ' {percent}% ({time})' -fe '{percent}' '<' 75 ' {percent}% ({time})' -fe '{percent}' '<' 60 ' {percent}% ({time})' -fe '{percent}' '<' 35 ' {percent}% ({time})' -fe '{percent}' '<' 5 ' {percent}% ({time})' -fe '{status}' '=' '^charging' '⚡ {percent}% ({time})' -fe '{status}' '=' 'full' ' {percent}%' -tg '{status}' '=' 'full' -tg '{percent}' '=' 100 -ti '{status}' '=' '^charging' -tw '{percent}' '<' 30 -tc '{percent}' '<' 5
+command=~/.local/share/i3blocks-modules/battery -fe '{percent}' '<' 90 ' {percent}% ({time})' -fe '{percent}' '<' 75 ' {percent}% ({time})' -fe '{percent}' '<' 60 ' {percent}% ({time})' -fe '{percent}' '<' 35 ' {percent}% ({time})' -fe '{percent}' '<' 5 ' {percent}% ({time})' -fe '{status}' '=' '^charging' '⚡ {percent}% ({time})' -fe '{status}' '=' 'full' ' {percent}%' -tg '{status}' '=' 'full' -tg '{percent}' '=' 100 -ti '{status}' '=' '^charging' -tw '{percent}' '<' 30 -tc '{percent}' '<' 5
 instance=Battery 0
 interval=1
 
@@ -303,24 +283,24 @@ interval=1
 # show 'warn color' when disk space is less than 20%
 # show 'crit color' when disk space is less than 10%
 [disk]
-command=~/.config/i3blocks-modules/disk -f " {free} {funit}iB / {total} {tunit}iB ({pused}%)" -tc '{pfree}' '<' 20 -tc '{pfree}' '<' 10
+command=~/.local/share/i3blocks-modules/disk -f " {free} {funit}iB / {total} {tunit}iB ({pused}%)" -tc '{pfree}' '<' 20 -tc '{pfree}' '<' 10
 instance=/
 interval=30
 
 # output: ☼ 100%
 [backlight]
-command=~/.config/i3blocks-modules/backlight
+command=~/.local/share/i3blocks-modules/backlight
 instance=intel_backlight
 interval=2
 
 # output:  Sun, 05.03.2017
 [date]
-command=~/.config/i3blocks-modules/date -f " {time}" -t "%a, %d.%m.%Y"
+command=~/.local/share/i3blocks-modules/date -f " {time}" -t "%a, %d.%m.%Y"
 interval=60
 
 # output:  14:36
 [time]
-command=~/.config/i3blocks-modules/date -f " {time}" -t "%H:%M"
+command=~/.local/share/i3blocks-modules/date -f " {time}" -t "%H:%M"
 interval=5
 ```
 

@@ -37,73 +37,72 @@ markup=pango
 ### Modules defines
 ###
 [cpu]
-command=~/.config/i3blocks-modules/bin/cpu -tw '{percent}' '>' '60' -tc '{percent}' '>' '80'
+command=~/.local/share/i3blocks-modules/cpu -tw '{percent}' '>' '60' -tc '{percent}' '>' '80'
 interval=1
 
 [cputemp]
-command=~/.config/i3blocks-modules/bin/cputemp -tw '{temp}' '>' 75 -tc '{temp}' '>' 90
+command=~/.local/share/i3blocks-modules/cputemp -tw '{temp}' '>' 75 -tc '{temp}' '>' 90
 instance=Core 0
 interval=1
 
 [memory]
-command=~/.config/i3blocks-modules/bin/memory -f ' {used} {uunit}B' -tw '{pfree}' '<' 30 -tc '{pfree}' '<' 15
+command=~/.local/share/i3blocks-modules/memory -f ' {used} {uunit}B' -tw '{pfree}' '<' 30 -tc '{pfree}' '<' 15
 interval=10
 
 [disk]
-command=~/.config/i3blocks-modules/bin/disk -f ' {used} {uunit}B' -tc '{pfree}' '<' 20 -tc '{pfree}' '<' 10
+command=~/.local/share/i3blocks-modules/disk -f ' {used} {uunit}B' -tc '{pfree}' '<' 20 -tc '{pfree}' '<' 10
 instance=/
 interval=30
 
 [bitcoin]
-command=~/.config/i3blocks-modules/bin/bitcoin -f 'B {eur}€' -tc '{eur}' '<' 2500
+command=~/.local/share/i3blocks-modules/bitcoin -f 'B {eur}€' -tc '{eur}' '<' 2500
 instance=coindesk
 interval=60
 
 [ethereum]
-command=~/.config/i3blocks-modules/bin/ethereum -f 'E {eur}€' -tc '{eur}' '<' 220
+command=~/.local/share/i3blocks-modules/ethereum -f 'E {eur}€' -tc '{eur}' '<' 220
 instance=ethereumprice
 interval=60
 
 [online]
-command=~/.config/i3blocks-modules/bin/online
+command=~/.local/share/i3blocks-modules/online
 interval=2
 
 [wifi]
-command=~/.config/i3blocks-modules/bin/wifi -fe '{status}' '=' 'up' ' {ssid} ({quality}%)' -fe '{status}' '!=' 'up' ' down'
+command=~/.local/share/i3blocks-modules/wifi -fe '{status}' '=' 'up' ' {ssid} ({quality}%)' -fe '{status}' '!=' 'up' ' down'
 instance=wlp58s0
 interval=2
 
 [iface]
-command=~/.config/i3blocks-modules/bin/iface -f ' {status}' -fe '{status}' = 'absent' ''
+command=~/.local/share/i3blocks-modules/iface -f ' {status}' -fe '{status}' = 'absent' ''
 instance=enxd481d733d87c
 interval=2
 
 [battery]
-command=~/.config/i3blocks-modules/bin/battery -fe '{percent}' '<' 90 ' {percent}% ({time})' -fe '{percent}' '<' 75 ' {percent}% ({time})' -fe '{percent}' '<' 60 ' {percent}% ({time})' -fe '{percent}' '<' 35 ' {percent}% ({time})' -fe '{percent}' '<' 5 ' {percent}% ({time})' -fe '{status}' '=' '^charging' '⚡ {percent}% ({time})' -fe '{status}' '=' 'full' ' {percent}%' -tg '{status}' '=' 'full' -tg '{percent}' '=' 100 -ti '{status}' '=' '^charging' -tw '{percent}' '<' 30 -tc '{percent}' '<' 5
+command=~/.local/share/i3blocks-modules/battery -fe '{percent}' '<' 90 ' {percent}% ({time})' -fe '{percent}' '<' 75 ' {percent}% ({time})' -fe '{percent}' '<' 60 ' {percent}% ({time})' -fe '{percent}' '<' 35 ' {percent}% ({time})' -fe '{percent}' '<' 5 ' {percent}% ({time})' -fe '{status}' '=' '^charging' '⚡ {percent}% ({time})' -fe '{status}' '=' 'full' ' {percent}%' -tg '{status}' '=' 'full' -tg '{percent}' '=' 100 -ti '{status}' '=' '^charging' -tw '{percent}' '<' 30 -tc '{percent}' '<' 5
 instance=Battery 0
 interval=1
 
 [backlight]
-command=~/.config/i3blocks-modules/bin/backlight
+command=~/.local/share/i3blocks-modules/backlight
 instance=intel_backlight
 interval=2
 
 [stock]
-command=~/.config/i3blocks-modules/bin/stock -f 'TLSA {usd}$' -tc '{usd}' '<' 820
+command=~/.local/share/i3blocks-modules/stock -f 'TLSA {usd}$' -tc '{usd}' '<' 820
 instance=TLSA
 interval=180
 
 [volume]
-command=~/.config/i3blocks-modules/bin/volume -f "{icon} {volume}%" -id "" -im "🔇" -fe '{port}' '=' 'headphone' '{icon}  {volume}%' -fe '{dev_bus}' '=' 'bluetooth' '{icon}  {volume}%' -tw '{muted}' '=' 'yes'
+command=~/.local/share/i3blocks-modules/volume -f "{icon} {volume}%" -id "" -im "🔇" -fe '{port}' '=' 'headphone' '{icon}  {volume}%' -fe '{dev_bus}' '=' 'bluetooth' '{icon}  {volume}%' -tw '{muted}' '=' 'yes'
 interval=1
 
 [date]
-#command=~/.config/i3blocks-modules/bin/date -f " {time}" -t "%a, %d.%m.%Y" -tg '{time}' '=' '^(Sat|Sun).*'
-command=~/.config/i3blocks-modules/bin/date -f " {time}" -t "%a, %d.%m.%Y"
+command=~/.local/share/i3blocks-modules/date -f " {time}" -t "%a, %d.%m.%Y" -tg '{time}' '=' '^(Sat|Sun).*'
 interval=60
 
 [time]
-command=~/.config/i3blocks-modules/bin/date -f " {time}" -t "%H:%M" -tw '{time}' '=' '^23.*' -tc '{time}' '=' '^0(0|1|2|3).*'
+command=~/.local/share/i3blocks-modules/date -f " {time}" -t "%H:%M" -tw '{time}' '=' '^23.*' -tc '{time}' '=' '^0(0|1|2|3).*'
 interval=5
 
 [weather]
