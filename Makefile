@@ -131,8 +131,8 @@ uninstall:
 	rm -f "${HOME}/.local/share/i3blocks-modules/wifi"
 
 	@# Remove dirs
-	rmdir "${HOME}/.config/i3blocks-modules"
-	rmdir "${HOME}/.local/share/i3blocks-modules"
+	rm -rf "${HOME}/.config/i3blocks-modules"
+	rm -rf "${HOME}/.local/share/i3blocks-modules"
 
 
 # -------------------------------------------------------------------------------------------------
