@@ -273,7 +273,7 @@ If the above file is present, those colors are used as the defaults.
 ### Example configuration
 
 `~/.config/i3blocks/config`
-```bash
+```ini
 # output:  51°C
 # shows 'good color' at temperatures below 71 degrees
 # shows 'warn color' at temperatures above 70 degrees
