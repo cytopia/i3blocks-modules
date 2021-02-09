@@ -226,9 +226,9 @@ pango=1
 ###
 ### source configuration file if it exists
 ###
-if [ -f "${HOME}/.config/i3blocks/contrib.conf" ]; then
+if [ -f "${HOME}/.config/i3blocks-modules/conf" ]; then
 	# shellcheck disable=SC1090
-	. "${HOME}/.config/i3blocks/contrib.conf"
+	. "${HOME}/.config/i3blocks-modules/conf"
 fi
 
 
@@ -340,7 +340,7 @@ print_usage() {
 	echo "--------------------------------------------------------------------------------"
 	echo "If not specified, script default colors are used"
 	echo "If config file with color codes is present in:"
-	echo "'${HOME}/.config/i3blocks/contrib.conf', these colors will be used."
+	echo "'${HOME}/.config/i3blocks-modules/conf', these colors will be used."
 	echo
 	echo "  -cd <code>   Default color (hexadecimal color code)"
 	echo "               Default value is: ${color_def}"

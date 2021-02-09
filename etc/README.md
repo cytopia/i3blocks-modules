@@ -2,7 +2,13 @@
 
 ## Installation
 
-Move `contrib.conf` to `~/.config/i3blocks-modules/contrib.conf` in order to set global module options.
+Install via:
+```bash
+make install
+```
+
+Or copy `conf` to `~/.config/i3blocks-modules/conf` in order to set global module options.
+
 
 ## Configuration
 
