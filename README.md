@@ -1,7 +1,23 @@
 # i3blocks modules
 
+---
+
+**This repository is part of the [i3-utils](https://github.com/cytopia/i3-utils).**
+
+---
+
+**[Install](#tada-install)** |
+**[Uninstall](#no_entry_sign-uninstall)** |
+**[Modules](#star-available-modules)** |
+**[Documentation](#information_source-documentation)** |
+**[Examples](#bulb-examples)** |
+**[Configuration](#wrench-configuration-file)** |
+**[Usage](#computer-general-module-usage)** |
+**[License](#page_facing_up-license)**
+
 [![Build Status](https://travis-ci.com/cytopia/i3blocks-modules.svg?branch=master)](https://travis-ci.com/cytopia/i3blocks-modules)
 ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/cytopia/i3blocks-modules)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/) modules.
 
@@ -12,11 +28,6 @@ High-quality, highly configurable [i3blocks](https://github.com/vivien/i3blocks/
 5. Use of global or specific **colors** for all types of stati
 6. Custom pango **markup** via color placeholders (`-np`)
 
----
-
-**This repository is part of the [i3-utils](https://github.com/cytopia/i3-utils).**
-
----
 
 
 
@@ -306,7 +317,7 @@ interval=5
 
 
 
-## :computer: General module help
+## :computer: General module usage
 
 Each module provides an extensive help output which gives you information about available placeholder, thresholds, colors and custom module arguments. Help screens can be shown via `-h`.
 ```bash
