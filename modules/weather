@@ -124,45 +124,47 @@ custom_action() {
 	succ=1
 
 	# Get icons
-	if ! raw_icon="$( curl -sS "${url_icon}" )"; then
+	if ! raw_icon="$( curl -sS --fail "${url_icon}")"; then
 		succ=0
 	else
 		icon_weather="$( echo "${raw_icon}" | awk '{print $1}' )"
 		icon_wind_speed="$( echo "${raw_icon}" | awk '{print $3}' | grep -Eo '^.{1}' )"
 		icon_wind_direction="$( echo "${raw_icon}" | awk '{print $3}' | rev | grep -Eo '[0-9].*$' | sed 's/[0-9]*//g' | grep -Eo '^.{1}' )"
-		succ=1
 	fi
 
 	# Get data
-	if ! raw_data="$( curl -sS "${url_data}" )"; then
+	if ! raw_data="$( curl -sS --fail "${url_data}" )"; then
 		succ=0
 	else
-		celsius="$( echo "${raw_data}" \
-			| grep temp_C \
-			| head -1 \
-			| awk -F':' '{print $2}' \
-			| grep -Eo '\-?[0-9]+'
-		)"
-		fahrenheit="$( echo "${raw_data}" \
-			| grep temp_F \
-			| head -1 \
-			| awk -F':' '{print $2}' \
-			| grep -Eo '\-?[0-9]+'
-		)"
-		wind_speed_kmh="$( echo "${raw_data}" \
-			| grep windspeedKmph \
-			| head -1 \
-			| awk -F':' '{print $2}' \
-			| grep -Eo '[0-9]+'
-		)"
-		wind_speed_mph="$( echo "${raw_data}" \
-			| grep windspeedMiles \
-			| head -1 \
-			| awk -F':' '{print $2}' \
-			| grep -Eo '[0-9]+'
-		)"
+		if ! echo "${raw_data}" | grep '"current_condition":' >/dev/null; then
+			succ=0
+		else
+			celsius="$( echo "${raw_data}" \
+				| grep temp_C \
+				| head -1 \
+				| awk -F':' '{print $2}' \
+				| grep -Eo '\-?[0-9]+'
+			)"
+			fahrenheit="$( echo "${raw_data}" \
+				| grep temp_F \
+				| head -1 \
+				| awk -F':' '{print $2}' \
+				| grep -Eo '\-?[0-9]+'
+			)"
+			wind_speed_kmh="$( echo "${raw_data}" \
+				| grep windspeedKmph \
+				| head -1 \
+				| awk -F':' '{print $2}' \
+				| grep -Eo '[0-9]+'
+			)"
+			wind_speed_mph="$( echo "${raw_data}" \
+				| grep windspeedMiles \
+				| head -1 \
+				| awk -F':' '{print $2}' \
+				| grep -Eo '[0-9]+'
+			)"
+		fi
 	fi
-
 	if [ "${succ}" -eq "1" ]; then
 		# Cache results
 		printf "%s %s %s %s %s %s %s\\n" \
